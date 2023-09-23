@@ -1,0 +1,13 @@
+wit oranje	SDA 1	10	5
+wit blauw	SCK	12	7
+wit groen	MISO	13	9
+wit zwart	SDA 2	8	11
+oranje		VIN	VIN	13
+blauw		RST	9	15
+groen		MOSI	11	17
+zwart		GND	GND	19
+
+
+skull	B3 52 C1 1B	1798219327
+apple	
+reset	C3 3D BD 94	19561189148
