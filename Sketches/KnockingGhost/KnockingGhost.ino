@@ -21,19 +21,19 @@ const int secretKnockPattern[numKnocksInPattern-1] = {683, 341, 1024, 1024, 1024
 
 // the amount by which the sensor reading must deviate from its base value to register a knock
 // increasing the threshold will make the sensor less sensitive, decreasing will make it more sensitive
-const int sensorThreshold = 15;
+const int sensorThreshold = 8;
 // if the (normalised) delay between any two knocks in the input sequence deviates by more than this amount compared
 // to the correct sequence, the input will be rejected
 const int knockErrorTolerance = 128;
 // if the average (normalised) delay between all knocks in the input sequence deviates by more than this amount compared
 // to the correct sequence, the input will be rejected
-const int averageKnockErrorTolerance = 128;
+const int averageKnockErrorTolerance = 250;
 // In order to reduce the risk of detecting erroneous "double-knocks" during input, this specifies a delay (in ms)
 // before reading the sensor again
 // Fastest I can knock is around 480BPM = 0.125secs between knocks. 400BPM = 0.15secs. 300 BPMN = 0.2secs
 const int minGapBetweenKnocks = 125;
 // The maximum gap after a knock (in ms) before the pattern is assumed to be finished
-const int maxGapBetweenKnocks = 1500;
+const int maxGapBetweenKnocks = 1000;
 
 // GLOBALS
 // The base reading of the sensor from which knocks will be measured

@@ -4,20 +4,6 @@ void setup() {
 
   SPI.begin();
 
-  //init servo motor, make sure it is initialized at the current servo position and set before attachment to avoid unnecessary servo movement.
-  // servoPos = flowerServo.read();
-
-  Serial.print(F("servoPos: "));
-  Serial.println(servoPos);
-
-  flowerServo.write(servoStart);
-  flowerServo.attach(flowerServoPin);
-  
-  // delay(200);
-
-  Serial.print(F("servoPos: "));
-  Serial.println(servoPos);
-
   //init inputs
   pinMode(solvePin, INPUT_PULLUP);
 
@@ -42,7 +28,7 @@ void loop() {
 
   // If the puzzle is solved but the flower not yet opened,open it
   if(puzzleState == RESETTING) {
-    //  Serial.println(F("closing"));
+     Serial.println(F("closing"));
     //close the flower
     bool closing = closeFlower();
 

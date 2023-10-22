@@ -1,3 +1,7 @@
+void onflowerFinished() {
+  Serial.println(F("Flower movement finished"));
+}
+
 void openFlower() {
   if((millis() - lastServoUpdate) > servoUpdateInterval) {  // speed to update
       lastServoUpdate = millis();
@@ -14,22 +18,9 @@ void openFlower() {
 bool closeFlower() {
   bool closing = true;
 
-  if ((servoPos == servoStart) ) // end of sweep
-  {
-    // stop
-    closing = false;
-  }
-
   if(closing) {
-    if((millis() - lastServoUpdate) > servoUpdateInterval) { // speed to update  
-        lastServoUpdate = millis();
-        if(servoPos > 127) {
-          servoPos++;
-        } else {
-          servoPos--;
-        }
-        flowerServo.write(servoPos);
-    }
+    servo.step(stepsToClose, onflowerFinished);
+    closing = false;
   }
 
   return closing;

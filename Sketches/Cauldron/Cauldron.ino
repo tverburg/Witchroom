@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <MFRC522.h>
-#include <Servo.h>
+#include <ContinuousServo.h>
 
 
 // GLOBALS
@@ -22,13 +22,10 @@ enum PuzzleState {
   RESETTING,
 };
 
-Servo flowerServo;
-uint8_t flowerServoPin = 4;
-long lastServoUpdate = 0;        // will store the time the servo started
-long servoUpdateInterval = 1;           // time to wait for servo to move from start t finish
-uint8_t servoStart = 0; // don't change!
-uint8_t servoEnd = 90;
-uint8_t servoPos = 0;
+ContinuousServo servo(4); // servo inits on pin 4
+uint8_t stepsToOpen = 500;  // about 10 seconds (500 * 20ms)
+uint8_t stepsToClose = -500;  // about 10 seconds (500 * 20ms)
+
 PuzzleState puzzleState = UNSOLVED;
 
 uint8_t solvePin = 5; // admin pin for manually solving the puzzle

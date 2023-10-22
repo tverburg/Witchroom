@@ -29,133 +29,21 @@ char topic[32];
 // track state of overall puzzle
 enum PuzzleState {Initialising, Running, Solved, Unsolved};
 PuzzleState puzzleState = Initialising;
-const int piece1InputPin = 4;
-int piece1Value;
-const int piece2InputPin = 5;
-int piece2Value;
-const int piece3InputPin = 6;
-int piece3Value;
-const int piece4InputPin = 7;
-int piece4Value;
 
-const int lockButtonInputPin = 3;
-const int lockBoxLockPin = 9;
+const uint8_t cagelockPin = A3;
+const uint8_t cagelockInputPin = A4;
+const uint8_t lockButtonInputPin = 3;
+const uint8_t piece1InputPin = 4;
+const uint8_t piece2InputPin = 5;
+const uint8_t piece3InputPin = 6;
+const uint8_t piece4InputPin = 7;
+const uint8_t lockBoxLockPin = 8;
+const uint8_t doorLockPin = A1;
 
-
+uint8_t piece1Value;
+uint8_t piece2Value;
+uint8_t piece3Value;
+uint8_t piece4Value;
 
 unsigned long previousMillis = 0;  // will store last time input was checked
 const long inputInterval = 1000;  // interval at which to check input
-
-void setup() {
-  // init serial communication with pc
-  Serial.begin(9600);
-  Serial.println(F("setup"));
-
-
-  // setup the ethernet connection
-  // ethernetSetup();
-  // setup the MQTT service
-  // mqttSetup();
-  // setup the ethernet and mqtt connection
-  puzzleSetup();
-  
-  //mqttEthernetSetup();
-}
-
-void puzzleSetup() {
-  pinMode (piece1InputPin, INPUT);
-  pinMode (piece2InputPin, INPUT);
-  pinMode (piece3InputPin, INPUT);
-  pinMode (piece4InputPin, INPUT); 
-
-  pinMode (lockButtonInputPin, INPUT);
-  digitalWrite(lockButtonInputPin, HIGH); 
-
-  pinMode (lockBoxLockPin, OUTPUT);
-}
-
-void loop() {
-
-  // Call the MQTT loop
-  //mqttLoop();
-
-  unsigned long currentMillis = millis();
-
-  if (currentMillis - previousMillis >= inputInterval) {
-    // save the last time you checked input
-    previousMillis = currentMillis;
-
-    switch(puzzleState) {
-      case Initialising:
-        Serial.println(F("Initialising"));
-        initPuzzleStates();
-        puzzleState = Running;
-        break;
-      case Running:
-        Serial.println(F("Running"));
-        if(checkIfPuzzleSolved()) {
-          onSolve();
-        }
-
-        // todo: move to appropriate position in code
-        checkDoorOpened();
-
-        break;
-      // case Solved:
-      //   if (checkIfPuzzleSolved()) {
-      //     onUnSolve();
-      //   }
-      //   break;
-    }
-  }
-}
-
-void checkDoorOpened() {
-  int doorState = digitalRead(lockButtonInputPin); // 1 is closed, 0 is open
-  if(doorState == 0) {
-     Serial.println(F("Open the door"));
-    // todo: release maglock
-  }
-}
-
-// Returns true if the puzzle is solved, false otherwise
-bool checkIfPuzzleSolved() {
-  Serial.println(F("checkIfPuzzleSolved"));
-
-  bool changed = false;
-  int piece1ValueLast = piece1Value;
-  int piece2ValueLast = piece2Value;
-  int piece3ValueLast = piece3Value;
-  int piece4ValueLast = piece4Value;
-
-  //todo: main state checking/setting
-
-  //todo: piece1 state checking/setting
-  piece1Value = digitalRead(piece1InputPin);
-  piece2Value = digitalRead(piece2InputPin);
-  piece3Value = digitalRead(piece3InputPin);
-  piece4Value = digitalRead(piece4InputPin);
-  changed = (piece1ValueLast != piece1Value) || (piece2ValueLast != piece2Value) || (piece3ValueLast != piece3Value) || (piece4ValueLast != piece4Value);
-
-  Serial.println(changed);
-  if(changed) {
-    Serial.println(F("it changed"));
-    StaticJsonDocument<48> puzzleObject;
-    JsonObject pieces = puzzleObject.createNestedObject("pieces");
-    puzzleObject["state"] = !piece1Value && !piece2Value && !piece3Value && !piece4Value;
-    puzzleObject["pieces"]["piece1"] = !piece1Value;
-    puzzleObject["pieces"]["piece2"] = !piece2Value;
-    puzzleObject["pieces"]["piece3"] = !piece3Value;
-    puzzleObject["pieces"]["piece4"] = !piece4Value;
-
-    // serializeJson(puzzleObject, Serial);
-    // Serial.println();
-    char serializedMessage[110];
-    serializeJson(puzzleObject, serializedMessage); 
-    publish(serializedMessage);
-
-    return puzzleObject["state"];
-  } else {
-    return false;
-  }
-}
