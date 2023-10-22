@@ -11,6 +11,9 @@ void setupCapSense() {
     Serial.println("MPR121 not found, check wiring?");
     while (1);
   }
+
+  cap.setThreshholds(4, 2);
+
   Serial.println("MPR121 found!");
 }
 
