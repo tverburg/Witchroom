@@ -22,9 +22,12 @@ enum PuzzleState {
   RESETTING,
 };
 
-ContinuousServo servo(4); // servo inits on pin 4
+ContinuousServo servo(2); // servo inits on pin 4
 uint8_t stepsToOpen = 500;  // about 10 seconds (500 * 20ms)
 uint8_t stepsToClose = -500;  // about 10 seconds (500 * 20ms)
+uint8_t stepsize = 20;
+uint8_t lowerStopPin = 4;
+uint8_t upperStopPin = 3;
 
 PuzzleState puzzleState = UNSOLVED;
 

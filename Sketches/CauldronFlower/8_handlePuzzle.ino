@@ -2,13 +2,13 @@ void onflowerFinished() {
   Serial.println(F("Flower movement finished"));
 }
 
+// Start opening the flower. returns true while closing. false if finished
 bool openFlower() {
   bool opening = true;
 
   // check if we reached the end
   uint8_t endStopValue = digitalRead(lowerStopPin);
   if(endStopValue == LOW) {
-        Serial.println(F("STOP!!!!"));
     opening = false;
   }
 
@@ -19,6 +19,7 @@ bool openFlower() {
   return opening;
 }
 
+// Start closing the flower. returns true while closing. false if finished
 bool closeFlower() {
   bool closing = true;
 
@@ -27,7 +28,6 @@ bool closeFlower() {
   Serial.println(endStopValue);
 
   if(endStopValue == LOW) {
-    Serial.println(F("STOP!!!!"));
     closing = false;
   }
 
@@ -40,7 +40,7 @@ bool closeFlower() {
 
 void onSolve() {
   Serial.println(F("Puzzle Solved!"));
-
+  //todo: maybe send some mqtt signal
 }
 
 void resetPuzzle() {

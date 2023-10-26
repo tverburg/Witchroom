@@ -5,11 +5,10 @@ void setup() {
   SPI.begin();
 
   //init inputs
-  pinMode(solvePin, INPUT_PULLUP);
+  pinMode(manualOpenPin, INPUT_PULLUP);
+  pinMode(manualClosePin, INPUT_PULLUP);
   pinMode(lowerStopPin, INPUT_PULLUP);
   pinMode(upperStopPin, INPUT_PULLUP);
-
-  setupRFID();
 
   resetPuzzle();
 
@@ -17,9 +16,9 @@ void setup() {
 }
 
 void loop() {
-  readRFID();
-
-  uint8_t buttonState = digitalRead(solvePin);
+  uint8_t solveInputState = digitalRead(solvePin);  //are we getting a solved signal from the CauldronTable
+  uint8_t openButtonState = digitalRead(manualOpenPin);  //are we getting a manual request to open the flower
+  uint8_t closeButtonState = digitalRead(manualClosePin);  //are we getting a manual request to close
 
   // If the puzzle is solved but the flower not yet opened,open it
   if (puzzleState == SOLVED) {
@@ -35,7 +34,7 @@ void loop() {
   }
 
   // If the puzzle is solved but the flower not yet opened,open it
-  if (puzzleState == RESETTING) {
+  else if (puzzleState == RESETTING) {
     Serial.println(F("closing"));
     //close the flower
     bool closing = closeFlower();
@@ -45,8 +44,17 @@ void loop() {
     }
   }
 
+  else if(puzzleState == UNSOLVED) {
+    if (solveInputState == LOW) {
+      puzzleState = SOLVED;
+    }
+  }
+
   // for debugging and admin purposes. To be able to externally trigger the puzzle to succeed in cases of any technical issues
-  if (buttonState == LOW) {
+  if (openButtonState == LOW) {
+    puzzleState = SOLVED;
+  }
+  if (closeButtonState == LOW) {
     puzzleState = SOLVED;
   }
 }
