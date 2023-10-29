@@ -25,7 +25,7 @@ bool closeFlower() {
 
   // check if we reached the end
   uint8_t endStopValue = digitalRead(upperStopPin);
-  Serial.println(endStopValue);
+  //Serial.println(endStopValue);
 
   if(endStopValue == LOW) {
     closing = false;

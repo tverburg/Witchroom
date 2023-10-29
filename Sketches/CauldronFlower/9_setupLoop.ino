@@ -13,9 +13,21 @@ void setup() {
   resetPuzzle();
 
   Serial.println(F("----- END SETUP -----"));
+
+  setupScales();
 }
 
 void loop() {
+
+ sendRawData(); //this is for sending raw data, for where everything else is done in processing
+
+   if (Serial.available()>0) {
+    while (Serial.available()) {
+      Serial.read();
+    }
+    tare();
+  }
+
   uint8_t solveInputState = digitalRead(solvePin);  //are we getting a solved signal from the CauldronTable
   uint8_t openButtonState = digitalRead(manualOpenPin);  //are we getting a manual request to open the flower
   uint8_t closeButtonState = digitalRead(manualClosePin);  //are we getting a manual request to close
@@ -35,7 +47,7 @@ void loop() {
 
   // If the puzzle is solved but the flower not yet opened,open it
   else if (puzzleState == RESETTING) {
-    Serial.println(F("closing"));
+    //Serial.println(F("closing"));
     //close the flower
     bool closing = closeFlower();
 

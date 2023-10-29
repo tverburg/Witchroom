@@ -1,14 +1,9 @@
 #include <SPI.h>
-#include <MFRC522.h>
 #include <ContinuousServo.h>
-
+#include "HX711-multi.h"
 
 // GLOBALS
-const byte numReaders = 2;
-// reader data pins
-const byte ssPins[] = {5, 6, 7, 8, 10};
-// Array of MFRC522 instances. one for each reader
-MFRC522 mfrc522[numReaders];
+const uint8_t numReaders = 5;
 // NFC tag ID's required for the puzzle. respectively: {skull, card}
 const String correctIDs[] = {"1798219327", "19561189148"};
 // the tag IDS currently detected by each reader
