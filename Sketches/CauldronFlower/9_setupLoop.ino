@@ -19,14 +19,7 @@ void setup() {
 
 void loop() {
 
- sendRawData(); //this is for sending raw data, for where everything else is done in processing
-
-   if (Serial.available()>0) {
-    while (Serial.available()) {
-      Serial.read();
-    }
-    tare();
-  }
+ readScales();
 
   uint8_t solveInputState = digitalRead(solvePin);  //are we getting a solved signal from the CauldronTable
   uint8_t openButtonState = digitalRead(manualOpenPin);  //are we getting a manual request to open the flower

@@ -11,14 +11,13 @@ void setup() {
   // declare input pins
   pinMode(limitButtonPin, INPUT_PULLUP);
   pinMode(lidButtonPin, INPUT_PULLUP);
+  pinMode(alchemistReaderPin, INPUT);
 
   //init pin values
   digitalWrite(dirPin, HIGH);
   digitalWrite(enableMotorPin, HIGH); // enabled means the motor driver is off
-  
-  setupRFID();
 
-  //resetPuzzle();
+  resetPuzzle();
 
   Serial.println("Initialized");
 }
@@ -28,26 +27,28 @@ void loop() {
   if(!inProgress) {
     int lidButtonState = digitalRead(lidButtonPin);
 
-    Serial.print("lidButtonState: ");
-    Serial.println(lidButtonState);
-
-    boolean puzzleSolved = isPuzzleSolved();
-
+    //check with the rfid readers if the puzzle is solved
+    bool puzzleSolved = digitalRead(alchemistReaderPin) == HIGH;
     Serial.print("puzzleSolved: ");
     Serial.println(puzzleSolved);
+
+       if(puzzleSolved) {
+        // lock the lid and start the motors
+        lockLid();
+      }
+
 
     if(lidButtonState == LOW) {
       Serial.println("checking");
       // Serial.println("lid button pushed, lid is closed, start checking for correct content");
-      //check with the rfid readers if the puzzle is solved
-
-
+    
       if(puzzleSolved) {
         // lock the lid and start the motors
         lockLid();
         inProgress = true;
       }
     }
+
   } else {
     onSolve();
   }

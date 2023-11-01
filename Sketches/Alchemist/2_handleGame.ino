@@ -53,13 +53,15 @@ void onSolve() {
   inProgress = false;
   digitalWrite(enableMotorPin, HIGH); // disable motor driver
 
+  unlockLid();
+
   Serial.println("done onSolve. stop in progress");
 }
 
 void lockLid() {
-  digitalWrite(lockPin, LOW);
+  digitalWrite(lockPin, HIGH);
 } 
 
 void unlockLid() {
-  digitalWrite(lockPin, HIGH);
+  digitalWrite(lockPin, LOW);
 } 

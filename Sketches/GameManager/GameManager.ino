@@ -3,8 +3,13 @@
 // It also serves as a manual triggering device to solve certain puzzles manually
 
 #include <SPI.h>
-#include <UIPEthernet.h>
+#include <Ethernet.h>
 #include <PubSubClient.h>
+
+// setup correctly for the used network
+byte mac[] = {  0xAA, 0xED, 0xBA, 0xFE, 0xFE, 0x13 };
+IPAddress ip(192, 168, 178, 25);
+IPAddress server(192, 168, 178, 24);
 
 const uint8_t solveCagePin = 4;
 const uint8_t solveFrontDoorPin = 5;

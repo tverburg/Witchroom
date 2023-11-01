@@ -1,5 +1,5 @@
 void onflowerFinished() {
-  Serial.println(F("Flower movement finished"));
+  //Serial.println(F("Flower movement finished"));
 }
 
 // Start opening the flower. returns true while closing. false if finished

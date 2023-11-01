@@ -1,13 +1,3 @@
-// GLOBALS
-const byte numReaders = 2;
-// reader data pins
-const byte ssPins[] = {8, 9};
-// Array of MFRC522 instances. one for each reader
-MFRC522 mfrc522[numReaders];
-// NFC tag ID's required for the puzzle. respectively: {skull, card}
-const String correctIDs[] = {"1798219327", "16379217145"};   // card: 19561189148
-// the tag IDS currently detected by each reader
-String currentIDs[numReaders];
 
 String dump_byte_array(byte *buffer, byte bufferSize) {
   String uid;
@@ -55,30 +45,25 @@ void setupRFID() {
   Serial.println(F("----- END SETUP -----"));
 }
 
-bool isPuzzleSolved() {
-  // assume the puzzle has been solved
-  boolean puzzleSolved = true;
+uint8_t isPuzzleSolved() {
+  boolean puzzleSolved = false;
+  uint8_t correctCount = 0;
+  uint8_t state = 0; 
 
   // assume the tags have not changed since last reading
   boolean changedValue = false;
-
-  Serial.print("isPuzzleSolved | readers: ");
-  Serial.println(numReaders);
 
   // Loop through each reader. 
   // Note: to prevent false negatives or failures because of lost rfid contact the strategy is to remember every last tag ID and not remove it if the tag is removed again. Only the appearence of a new tag wil overwrite the previous value
   // this way the chances or failure due to moing or falling tags is negated. It only increases the chance for false positives which is not necessarily  a bad thing for an escape room puzzle
   for (uint8_t i=0; i<numReaders; i++) {
-    Serial.println("point1");
       // init the sensor
-      //mfrc522[i].PCD_Init();
-Serial.println("point2");
+      mfrc522[i].PCD_Init();
       // Serial.print("init reader ");
       // Serial.println(i);
 
       // String to hold the ID detected by each sensor
       
-Serial.println("point3");
       // Serial.print("PICC_IsNewCardPresent: ");
       // Serial.print(mfrc522[i].PICC_IsNewCardPresent());
       // Serial.print(", ");
@@ -99,7 +84,7 @@ Serial.println("point3");
 
         // if the current reading is different from the last known reading
         if(readRFID != currentIDs[i]) {
-          
+          Serial.println("this reading is different");
           // set the flag to show that the puzzle state has changed
           changedValue = true;
           // Update the stored value for this sensor
@@ -107,8 +92,15 @@ Serial.println("point3");
 
           // check if this reading was already stored in the other sensor, if so remove it. Cant have 2 readers triggerd by the same tag
           int opposingID = 1 - i; // flips between 0 and 1
+           Serial.print("is ");
+           Serial.print(readRFID);
+           Serial.print(" the same as ");
+           Serial.print(currentIDs[opposingID]);
+           Serial.print(" :");
+            Serial.println(readRFID == currentIDs[opposingID]);
           if (readRFID == currentIDs[opposingID]) {
             currentIDs[opposingID] = "";
+            correctCount--;
           }
         }
 
@@ -117,21 +109,32 @@ Serial.println("point3");
       // stop encryption on PCD
       mfrc522[i].PCD_StopCrypto1();
       }
-Serial.println("point4");
+
       // If the reading fails to match the correct ID for this sensor
-      if(currentIDs[i] != correctIDs[0] && currentIDs[i] != correctIDs[1]) {
-        // the puzzle has not been solved
-        puzzleSolved = false;
+      if(currentIDs[i] == correctIDs[0] || currentIDs[i] == correctIDs[1]) {
+        correctCount++;
       }
+
+      //bool correct = 
+
+      // update the information about the state of the readers for any listeners 
+      //state += int()
   }
 
-  Serial.println("done with the loop");
+ 
+
+
+  if(correctCount == 2){
+// the puzzle has not been solved
+    puzzleSolved = true;
+  }
 
   // if the changedValue flag has been set, at least one sensor has changed
   if(changedValue) {
-    Serial.println("somehting chaNged");
+    Serial.println("somehting changed");
+
     // Dump to serial the current state of all sensors
-      for (uint8_t i=0; i<numReaders; i++){
+    for (uint8_t i=0; i<numReaders; i++){
       // init the reader
       mfrc522[i].PCD_Init(ssPins[i], 9);
 
@@ -141,13 +144,13 @@ Serial.println("point4");
       Serial.print(F(" on pin "));
       Serial.print(String(ssPins[i]));
       Serial.print(F(". detected tag: "));
-      Serial.println(currentIDs[i]);
+      Serial.println(currentIDs[i]);;   
     }
     Serial.println(F("----"));
-  }
 
-  Serial.print("return ");
-        Serial.println(puzzleSolved);
+    Serial.print("puzzleSolved: ");
+    Serial.println(puzzleSolved);
+  } 
 
-  return puzzleSolved;
+  return state;
 }
