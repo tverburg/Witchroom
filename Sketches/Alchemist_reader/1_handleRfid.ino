@@ -48,7 +48,7 @@ void setupRFID() {
 uint8_t isPuzzleSolved() {
   boolean puzzleSolved = false;
   uint8_t correctCount = 0;
-  uint8_t state = 0; 
+  uint8_t rfidPuzzleState = 0; 
 
   // assume the tags have not changed since last reading
   boolean changedValue = false;
@@ -59,27 +59,16 @@ uint8_t isPuzzleSolved() {
   for (uint8_t i=0; i<numReaders; i++) {
       // init the sensor
       mfrc522[i].PCD_Init();
-      // Serial.print("init reader ");
-      // Serial.println(i);
-
-      // String to hold the ID detected by each sensor
-      
-      // Serial.print("PICC_IsNewCardPresent: ");
-      // Serial.print(mfrc522[i].PICC_IsNewCardPresent());
-      // Serial.print(", ");
-      //  Serial.print("PICC_ReadCardSerial: ");
-      // Serial.println(mfrc522[i].PICC_ReadCardSerial());
-      
-
+ 
       // If the sensor detects a tag and is able to read it
       if(mfrc522[i].PICC_IsNewCardPresent() && mfrc522[i].PICC_ReadCardSerial()) {
         String readRFID = "";
-        Serial.print("we have tag from id ");
-        Serial.print(i);
+        //Serial.print("we have tag from id ");
+        //Serial.print(i);
         // extract the ID from the tag
         readRFID = dump_byte_array(mfrc522[i].uid.uidByte, mfrc522[i].uid.size);
 
-      Serial.print(", readRFID: ");
+      //Serial.print(", readRFID: ");
       Serial.println(readRFID);
 
         // if the current reading is different from the last known reading
@@ -115,15 +104,13 @@ uint8_t isPuzzleSolved() {
         correctCount++;
       }
 
-      //bool correct = 
+      bool correct = currentIDs[i] == correctIDs[0] || currentIDs[i] == correctIDs[1];
 
       // update the information about the state of the readers for any listeners 
-      //state += int()
+      // fancy formula that creates a unique int value for each combination of correct-incorrect readers
+      rfidPuzzleState += ((i*int(correct))+i+int(correct)) ;
   }
-
- 
-
-
+  
   if(correctCount == 2){
 // the puzzle has not been solved
     puzzleSolved = true;
@@ -152,5 +139,13 @@ uint8_t isPuzzleSolved() {
     Serial.println(puzzleSolved);
   } 
 
-  return state;
+  return rfidPuzzleState;
+}
+
+void resetReader() {
+  for (uint8_t i=0; i<numReaders; i++){
+    currentIDs[i] = "";
+  }
+  digitalWrite(outputPinA, LOW);
+  digitalWrite(outputPinA, LOW);
 }

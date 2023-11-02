@@ -18,3 +18,5 @@ String currentIDs[numReaders];
 
 uint8_t outputPinA = D8;
 uint8_t outputPinB = D4;
+uint8_t resetPin = D0;
+bool resetting = false;

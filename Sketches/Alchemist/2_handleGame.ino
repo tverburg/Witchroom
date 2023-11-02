@@ -56,12 +56,15 @@ void onSolve() {
   unlockLid();
 
   Serial.println("done onSolve. stop in progress");
+  solved = true;
 }
 
 void lockLid() {
+  Serial.println("Lock lid");
   digitalWrite(lockPin, HIGH);
 } 
 
 void unlockLid() {
+  Serial.println("Unlock lid");
   digitalWrite(lockPin, LOW);
 } 

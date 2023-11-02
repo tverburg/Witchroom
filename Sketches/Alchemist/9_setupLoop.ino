@@ -11,7 +11,8 @@ void setup() {
   // declare input pins
   pinMode(limitButtonPin, INPUT_PULLUP);
   pinMode(lidButtonPin, INPUT_PULLUP);
-  pinMode(alchemistReaderPin, INPUT);
+  pinMode(alchemistReaderPinA, INPUT);
+  pinMode(alchemistReaderPinB, INPUT);
 
   //init pin values
   digitalWrite(dirPin, HIGH);
@@ -23,34 +24,35 @@ void setup() {
 }
 
 void loop() {
-  //ignore all inputs if the end animation is in progress
-  if(!inProgress) {
-    int lidButtonState = digitalRead(lidButtonPin);
+  if(!solved) {
+    //ignore all inputs if the end animation is in progress
+    if(!inProgress) {
+      int lidButtonState = digitalRead(lidButtonPin);
 
-    //check with the rfid readers if the puzzle is solved
-    bool puzzleSolved = digitalRead(alchemistReaderPin) == HIGH;
-    Serial.print("puzzleSolved: ");
-    Serial.println(puzzleSolved);
+      //check with the rfid readers if the puzzle is solved
+      bool pieceASolved = digitalRead(alchemistReaderPinA) == HIGH;
+      bool pieceBSolved = digitalRead(alchemistReaderPinB) == HIGH;
 
-       if(puzzleSolved) {
-        // lock the lid and start the motors
+      if(pieceASolved && pieceBSolved) {
         lockLid();
       }
 
-
-    if(lidButtonState == LOW) {
-      Serial.println("checking");
-      // Serial.println("lid button pushed, lid is closed, start checking for correct content");
-    
-      if(puzzleSolved) {
-        // lock the lid and start the motors
-        lockLid();
-        inProgress = true;
+      if(lidButtonState == LOW) {
+        Serial.println("checking");
+        // Serial.println("lid button pushed, lid is closed, start checking for correct content");
+      Serial.print("pieces solved : ");
+      Serial.println(pieceASolved && pieceBSolved);
+        if(pieceASolved && pieceBSolved) {
+          Serial.println("start progress");
+          // make sure the lid is locked and start the motors
+          lockLid();
+          inProgress = true;
+        }
       }
+
+    } else {
+      onSolve();
     }
-
-  } else {
-    onSolve();
   }
 
 
