@@ -7,15 +7,14 @@
 #include <PubSubClient.h>
 
 // setup correctly for the used network
-byte mac[] = {  0xAA, 0xED, 0xBA, 0xFE, 0xFE, 0x13 };
-IPAddress ip(192, 168, 178, 25);
-IPAddress server(192, 168, 178, 24);
+byte mac[] = {  0xAA, 0xBB, 0xCC, 0xDD, 0x10, 0x12 };
+IPAddress ip(192, 168, 178, 26);
+IPAddress server(192, 168, 178, 25);
 
-const uint8_t solveCagePin = 4;
-const uint8_t solveFrontDoorPin = 5;
-const uint8_t frontDoorFinishedPin = 6;
-const uint8_t solveHerbsPuzzlePin = 7;
+// outputs
+const uint8_t frontDoorPin = 4;           // handles the door to the room
+const uint8_t solveHerbsPuzzlePin = 5;    // manual finishing of the herbs puzzle
 
 bool solveCage = false;
-bool solveFrontDoor = false;
+bool frontDoorOpen = false;
 bool solveHerbs = false;

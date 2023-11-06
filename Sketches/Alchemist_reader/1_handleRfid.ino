@@ -46,8 +46,6 @@ void setupRFID() {
 }
 
 uint8_t isPuzzleSolved() {
-  boolean puzzleSolved = false;
-  uint8_t correctCount = 0;
   uint8_t rfidPuzzleState = 0; 
 
   // assume the tags have not changed since last reading
@@ -81,15 +79,14 @@ uint8_t isPuzzleSolved() {
 
           // check if this reading was already stored in the other sensor, if so remove it. Cant have 2 readers triggerd by the same tag
           int opposingID = 1 - i; // flips between 0 and 1
-           Serial.print("is ");
-           Serial.print(readRFID);
-           Serial.print(" the same as ");
-           Serial.print(currentIDs[opposingID]);
-           Serial.print(" :");
-            Serial.println(readRFID == currentIDs[opposingID]);
+          //  Serial.print("is ");
+          //  Serial.print(readRFID);
+          //  Serial.print(" the same as ");
+          //  Serial.print(currentIDs[opposingID]);
+          //  Serial.print(" :");
+          //   Serial.println(readRFID == currentIDs[opposingID]);
           if (readRFID == currentIDs[opposingID]) {
             currentIDs[opposingID] = "";
-            correctCount--;
           }
         }
 
@@ -98,22 +95,6 @@ uint8_t isPuzzleSolved() {
       // stop encryption on PCD
       mfrc522[i].PCD_StopCrypto1();
       }
-
-      // If the reading fails to match the correct ID for this sensor
-      if(currentIDs[i] == correctIDs[0] || currentIDs[i] == correctIDs[1]) {
-        correctCount++;
-      }
-
-      bool correct = currentIDs[i] == correctIDs[0] || currentIDs[i] == correctIDs[1];
-
-      // update the information about the state of the readers for any listeners 
-      // fancy formula that creates a unique int value for each combination of correct-incorrect readers
-      rfidPuzzleState += ((i*int(correct))+i+int(correct)) ;
-  }
-  
-  if(correctCount == 2){
-// the puzzle has not been solved
-    puzzleSolved = true;
   }
 
   // if the changedValue flag has been set, at least one sensor has changed
@@ -134,10 +115,15 @@ uint8_t isPuzzleSolved() {
       Serial.println(currentIDs[i]);;   
     }
     Serial.println(F("----"));
-
-    Serial.print("puzzleSolved: ");
-    Serial.println(puzzleSolved);
   } 
+
+  for (uint8_t i=0; i<numReaders; i++) { 
+    bool correct = currentIDs[i] == correctIDs[0] || currentIDs[i] == correctIDs[1];
+
+    // update the information about the state of the readers for any listeners 
+    // fancy formula that creates a unique int value for each combination of correct-incorrect readers
+    rfidPuzzleState += ((i*int(correct))+i+int(correct)) ;
+  }
 
   return rfidPuzzleState;
 }

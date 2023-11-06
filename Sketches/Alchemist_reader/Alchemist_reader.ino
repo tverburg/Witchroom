@@ -12,7 +12,7 @@ const int rfidResetPin = D3;
 // Array of MFRC522 instances. one for each reader
 MFRC522 mfrc522[numReaders];
 // NFC tag ID's required for the puzzle. respectively: {skull, card}
-const String correctIDs[] = {"24313329149", "19561189148"};   // card: 19561189148
+const String correctIDs[] = {"16379217145", "19561189148"};   // card: 19561189148
 // the tag IDS currently detected by each reader
 String currentIDs[numReaders];
 
