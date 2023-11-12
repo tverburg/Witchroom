@@ -38,12 +38,14 @@ bool closeFlower() {
   return closing;
 }
 
-void onSolve() {
-  Serial.println(F("Puzzle Solved!"));
-  //todo: maybe send some mqtt signal
+void solve() {
+  Serial.println(F("Open Flower"));
+  open = true;
+  inProgress = true;
 }
 
-void resetPuzzle() {
-  Serial.println(F("Reset Puzzle"));
-  puzzleState = RESETTING;
+void reset() {
+  Serial.println(F("Reset Flower"));
+  open = false;
+  inProgress = true;
 }

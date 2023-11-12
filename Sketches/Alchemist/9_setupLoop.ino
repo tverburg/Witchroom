@@ -33,12 +33,15 @@ void loop() {
       bool pieceASolved = digitalRead(alchemistReaderPinA) == HIGH;
       bool pieceBSolved = digitalRead(alchemistReaderPinB) == HIGH;
 
-      Serial.println(pieceASolved && pieceBSolved);
+      Serial.print("pieceASolved: ");
+      Serial.print(pieceASolved);
+      Serial.print(", pieceBSolved:");
+      Serial.println(pieceBSolved);
 
       if(lidButtonState == LOW) {
-        Serial.println("lid button pushed, lid is closed, start checking for correct content");
-        Serial.print("pieces solved : ");
-        Serial.println(pieceASolved && pieceBSolved);
+       // Serial.println("lid button pushed, lid is closed, start checking for correct content");
+       // Serial.print("pieces solved : ");
+       // Serial.println(pieceASolved && pieceBSolved);
         
         if(pieceASolved && pieceBSolved) {
           Serial.println("start progress");
