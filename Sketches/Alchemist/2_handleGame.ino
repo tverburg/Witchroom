@@ -60,11 +60,11 @@ void onSolve() {
 }
 
 void lockLid() {
-  Serial.println("Lock lid");
+  //Serial.println("Lock lid");
   digitalWrite(lockPin, HIGH);
 } 
 
 void unlockLid() {
-  Serial.println("Unlock lid");
+  //Serial.println("Unlock lid");
   digitalWrite(lockPin, LOW);
 } 

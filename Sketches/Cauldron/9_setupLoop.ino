@@ -1,52 +1,43 @@
 void setup() {
   Serial.begin(9600);
-  Serial.println(F("start Serial communication"));
+  mqttEthernetSetup();
 
-  SPI.begin();
+  Serial.println(F("starting setup"));
 
-  //init inputs
-  pinMode(solvePin, INPUT_PULLUP);
-  pinMode(lowerStopPin, INPUT_PULLUP);
-  pinMode(upperStopPin, INPUT_PULLUP);
+  delay(10);
 
-  setupRFID();
+  //define pins
+  pinMode(flowerPin, OUTPUT);
 
-  resetPuzzle();
+  //init defaults
+  reset();
 
-  Serial.println(F("----- END SETUP -----"));
+  startupScales();
 }
 
-void loop() {
-  readRFID();
-
-  uint8_t buttonState = digitalRead(solvePin);
-
-  // If the puzzle is solved but the flower not yet opened,open it
-  if (puzzleState == SOLVED) {
-    Serial.println(F("opening"));
-    //open the flower
-    bool opening = openFlower();
-
-    // if we're done opening
-    if (!opening) {
-      // stop
-      puzzleState = FINISHED;
-    }
+void loop() {  
+  mqttLoop();
+  // put your main code here, to run repeatedly:
+  if (!solved) {
+    readValues();
+    checkSolution();
+  } else if(!finished) {
+    solve();
   }
 
-  // If the puzzle is solved but the flower not yet opened,open it
-  if (puzzleState == RESETTING) {
-    Serial.println(F("closing"));
-    //close the flower
-    bool closing = closeFlower();
+  if(Serial.available() > 0) {
+    // read inoming byte:
+    int incomingByte = Serial.read();
 
-    if (!closing) {
-      puzzleState = UNSOLVED;
+    //0=48, 1=49, enter=10
+    if(incomingByte == 48) {
+      reset();
+    } else if(incomingByte == 49){
+      solve();
     }
-  }
 
-  // for debugging and admin purposes. To be able to externally trigger the puzzle to succeed in cases of any technical issues
-  if (buttonState == LOW) {
-    puzzleState = SOLVED;
+    //say what you got:
+    Serial.print(F("Received from serial: "));
+    Serial.println(incomingByte);
   }
 }

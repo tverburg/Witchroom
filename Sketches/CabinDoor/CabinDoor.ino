@@ -1,30 +1,15 @@
 #include <SPI.h>
-#include <UIPEthernet.h>
+#include <Ethernet.h>
 #include <PubSubClient.h>
-#include <ArduinoJson.h>
 
-// CONSTANTS
-// MAC
-uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
-// Unique IP
-const IPAddress deviceIP(192,168, 1, 31);
-// Broker IP
-//const IPAddress mqttServerIP(192,168,1, 93);
-const IPAddress mqttServerIP(192,168, 1, 93);
-
+// UTP constants
+byte mac[]    = { 0xAA, 0xBB, 0xCC, 0xDD, 0x10, 0x11 };
+IPAddress ip(192, 168, 178, 25);
+IPAddress server(192, 168, 178, 24);
+EthernetClient ethClient;
 // Unique name of this device, used as client ID for MQTT server and topic name
-const char* deviceID = "cabinDoor";
-const char* nameSpace = "witchroom/puzzles";
-
-// Ethernet client instance
-EthernetClient ethernetClient;
-// MQTT client
-PubSubClient MQTTclient;
-
-// buffer to hold the messages to ben sent/have been received
-char msg[64];
-// The topic in which to publish a message
-char topic[32];
+const char deviceID[10] = "cabinDoor";
+const char nameSpace[] = "witchroom/puzzles";
 
 // track state of overall puzzle
 enum PuzzleState {Initialising, Running, Solved, Unsolved};
@@ -44,6 +29,8 @@ uint8_t piece1Value;
 uint8_t piece2Value;
 uint8_t piece3Value;
 uint8_t piece4Value;
+
+char statusUpdateMessage[32];
 
 unsigned long previousMillis = 0;  // will store last time input was checked
 const long inputInterval = 1000;  // interval at which to check input

@@ -1,4 +1,3 @@
-
 void puzzleSetup() {
   pinMode(piece1InputPin, INPUT);
   pinMode(piece2InputPin, INPUT);
@@ -58,21 +57,12 @@ bool checkIfPuzzleSolved() {
   Serial.println(changed);
   if(changed) {
     Serial.println(F("it changed"));
-    StaticJsonDocument<48> puzzleObject;
-    JsonObject pieces = puzzleObject.createNestedObject("pieces");
-    puzzleObject["state"] = !piece1Value && !piece2Value && !piece3Value && !piece4Value;
-    puzzleObject["pieces"]["piece1"] = !piece1Value;
-    puzzleObject["pieces"]["piece2"] = !piece2Value;
-    puzzleObject["pieces"]["piece3"] = !piece3Value;
-    puzzleObject["pieces"]["piece4"] = !piece4Value;
+    bool solved = !piece1Value && !piece2Value && !piece3Value && !piece4Value;
 
-    // serializeJson(puzzleObject, Serial);
-    // Serial.println();
-    char serializedMessage[110];
-    serializeJson(puzzleObject, serializedMessage); 
-    publish(serializedMessage);
+    sprintf(statusUpdateMessage,"(%d,%d,%d,%d:%d)",piece1Value,piece2Value,piece3Value,piece4Value,solved);
+    client.publish(publishingTopic, statusUpdateMessage);
 
-    return puzzleObject["state"];
+    return solved;
   } else {
     return false;
   }

@@ -7,11 +7,11 @@
 unsigned long blowStartMillis;  //point in the counter the blow started
 unsigned long currentMillis; //current point in the global counter
 unsigned long swirlStartMillis; //point in the counter the swirl started
-const unsigned long blowPeriod = 350; // amount of time the "blow" needs to take in order for it to be recognized as such. to prevent spikes from yelling or something
+const unsigned long blowPeriod = 100; // amount of time the "blow" needs to take in order for it to be recognized as such. to prevent spikes from yelling or something
 const unsigned long swirlPeriod = 10000; // amount of time the "swirling" will take place
 boolean swirling = false;
 boolean blowing = false;
-const int soundTriggerFactor = 1.5;
+const double soundTriggerFactor = 1.3;
 int baseLevel = 0;
 int previousValue = 0;
 
@@ -21,6 +21,7 @@ void setup()
   
   // Configure pins as output
   pinMode(PIN_MOTOR_CONTROL, OUTPUT); 
+  digitalWrite(PIN_MOTOR_CONTROL, HIGH); 
 
   //calibrate sensor
   // take a sample of readings from the sensor
@@ -36,8 +37,13 @@ void setup()
   // use this as the "base" reading;
   baseLevel = avgReading;
 
+  swirling = false;
+
   // Display status
-  Serial.println("Initialized");
+  Serial.print("Initialized with a baselevel of ");
+  Serial.print(baseLevel);
+  Serial.print(" and a triggerlevel of ");
+  Serial.println(baseLevel*soundTriggerFactor);
 }
 
 int smooth(int current, int previous) {
@@ -48,6 +54,18 @@ int smooth(int current, int previous) {
   return v;
 }
 
+int improvedSmooth(int current, int previous) {
+  double c = current * 1.0;
+  double p = previous * 1.0;
+  int total = c+previous;
+  Serial.print(total);
+  int v = ((p/(total))*p) + ((c/(total))*c);
+  Serial.print(", ");
+  Serial.print(v);
+  Serial.print("_________");
+  return v * 1.0; // to double conversion
+}
+
 void loop()
 {
   currentMillis = millis();
@@ -55,11 +73,18 @@ void loop()
   float soundTriggerLevel = baseLevel*soundTriggerFactor;
   
   if(!swirling) {
-      digitalWrite(PIN_MOTOR_CONTROL, LOW); 
+      digitalWrite(PIN_MOTOR_CONTROL, HIGH); 
     // Check the envelope input
     int currentValue = analogRead(PIN_ANALOG_IN);
-    value = ((currentValue + previousValue)/2); // add a smoothing function
-    value = smooth(currentValue, previousValue);
+    // value = ((currentValue + previousValue)/2); // add a smoothing function
+    // value = smooth(currentValue, previousValue);
+    value = improvedSmooth(currentValue, previousValue);
+    Serial.print(previousValue);
+    Serial.print(" -> ");
+    Serial.print(currentValue);
+    Serial.print(" ->");
+    Serial.println(value);
+
 
     // Serial.print("value: ");
     // Serial.println(value);
@@ -71,13 +96,13 @@ void loop()
     // if we start blowing, register it and start the counter
     if((value > soundTriggerLevel) && !blowing)
     {
-      Serial.println("start blowing");
+      Serial.println("started blowing");
         blowing = true;
         blowStartMillis = millis();
     } 
     // if we stop blowing, register it
     else if ((value <= soundTriggerLevel) && blowing){
-      Serial.println("stop blowing");
+      Serial.println("stopped blowing");
         blowing = false;
     } 
     // if we are blowing for some time, check if we reached the required period
@@ -96,7 +121,7 @@ void loop()
     Serial.println("swirling");
     Serial.println(currentMillis - swirlStartMillis);
     
-    digitalWrite(PIN_MOTOR_CONTROL, HIGH); 
+    digitalWrite(PIN_MOTOR_CONTROL, LOW); 
 
       // if we reached the swirl period, stop the swirl.
       if(currentMillis - swirlStartMillis >= swirlPeriod) {

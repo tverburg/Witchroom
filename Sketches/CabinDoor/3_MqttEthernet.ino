@@ -1,52 +1,27 @@
+// buffer to hold the messages to ben sent/have been received
+char msg[64];
+// The topic to which to subscribe for actions or updates
+char listenerTopic[32];
+char publishingTopic[32];
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print(F("Message arrived ["));
+  Serial.print(topic);
+  Serial.print(F("] "));
+  for (int i=0;i<length;i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+PubSubClient client(server, 1883, callback, ethClient);
+
 bool valueToBool(int value) {
   if(value == 1) {
     return true;
   } else {
     return false;
   }
-}
-
-void reconnect() {
-  Serial.println(F("reconnect..."));
-  // Loop until we're reconnected
-  while (!MQTTclient.connected()) {
-    Serial.print(F("Attempting MQTT connection with id: "));
-    Serial.print(deviceID);
-    //Serial.print(F("... "));
-    // Attempt to connect
-    if (MQTTclient.connect(deviceID)) {
-      Serial.println(F("MQTT connected"));
-      // Once connected, publish an announcement...
-      publish("'cabin door' is connected");
-      // ... and resubscribe
-      MQTTclient.subscribe(topic);
-      // Subscribe to topics meant for all devices
-      MQTTclient.subscribe("witchroom/all");
-    } else {
-      Serial.print(F("failed, rc="));
-      Serial.print(MQTTclient.state());
-      Serial.println(F(" try again in 5 seconds"));
-      // Wait 5 seconds before retrying
-      delay(5000);
-    }
-  }
-}
-
-void mqttLoop() {
-  if (!MQTTclient.connected()) {
-    reconnect();
-  }
-  MQTTclient.loop();
-}
-
-void callback(char* topic, byte* payload, unsigned int length) {
-  //Serial.print(F("Message arrived ["));
-  //Serial.print(topic);
-  //Serial.print(F("] "));
-  for (int i=0;i<length;i++) {
-    Serial.print((char)payload[i]);
-  }
-  //Serial.println();
 }
 
 void onSolve() {
@@ -60,7 +35,7 @@ void onSolve() {
   puzzleState = Solved;
 
   // publish message to MQTT broker
-  publish("Test puzzle solved!");
+  client.publish(publishingTopic, "solved");
 }
 
 void onUnSolve() {
@@ -74,7 +49,7 @@ void onUnSolve() {
   puzzleState = Running;
 
   // publish message to MQTT broker
-  publish("Test puzzle unsolved!");
+  client.publish(publishingTopic, "unsolved");
 }
 
 void onReset() {
@@ -88,57 +63,25 @@ void onReset() {
   puzzleState = Running;
 
   // publish message to MQTT broker
-  publish("Test puzzle reset!");
-}
-
-void mqttSetup() {
-  // Define some settings for the MQTT client
-  MQTTclient.setClient(ethernetClient);
-  MQTTclient.setServer(mqttServerIP, 1883);
-  //MQTTclient.setCallback(callback);
-  snprintf(topic, 32, "witchroom/puzzles/%s", deviceID);
-}
-
-void ethernetSetup() {
-  // Attempt to connect to the specified network
-  Serial.print(F("Connecting to the network with ip "));
-  Serial.println(deviceIP);
-
-  //Ethernet.begin(mac, deviceIP);
-
-  //if(Ethernet.begin(mac) == 0) {
- //   Serial.println(F("Ethernet configuration using DHCP failed"));
- //   for(;;);
-  //}
-
-  // First, try to create a DHCP connection
-  if (Ethernet.begin(mac) == 0) {
-    // Try to connect using specified IP address instead of DHCP
-    Ethernet.begin(mac, deviceIP);
-  }
-
-  // give the ethernet shield a couple of seconds to initialize
-  //delay(2000);
-
-  // Print debug info about the connection
-  Serial.print(F("Connected! IP address: "));
-  Serial.println(Ethernet.localIP());
+  client.publish(publishingTopic, "reset");
 }
 
 void mqttEthernetSetup() {
-  // setup the ethernet connection
-  ethernetSetup();
-  // setup the MQTT service
-  mqttSetup();
-}
+  //set the topics for this device
+  snprintf(listenerTopic, 32, "%s/%s/control", nameSpace, deviceID);
+  snprintf(publishingTopic, 32, "%s/%s/update", nameSpace, deviceID);
 
-void initPuzzleStates() {
-  // do any puzzle init actions here like calibrations
-}
-
-void publish(char* message) {
-  Serial.print(F("publishing: "));
-  Serial.println(message);
-    Serial.println(topic);
-  MQTTclient.publish(topic, message);
-}
+  Ethernet.begin(mac, ip);
+  // Note - the default maximum packet size is 128 bytes. If the
+  // combined length of clientId, username and password exceed this use the
+  // following to increase the buffer size:
+  // client.setBufferSize(255);
+  
+  if (client.connect(deviceID, "shape", "escape")) {
+    client.publish(publishingTopic, "connected");
+    // Subscribe to topics meant for this device
+    client.subscribe(listenerTopic);
+    // Subscribe to topics meant for all devices
+    client.subscribe("witchroom/all");
+  };
+};

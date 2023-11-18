@@ -3,21 +3,16 @@ void setup() {
   Serial.begin(9600);
   Serial.println(F("setup"));
 
+  // setup the ethernet connection and MQTT service
+  mqttEthernetSetup();
 
-  // setup the ethernet connection
-  // ethernetSetup();
-  // setup the MQTT service
-  // mqttSetup();
   // setup the ethernet and mqtt connection
   puzzleSetup();
-  
-  //mqttEthernetSetup();
 }
 
 void loop() {
-
   // Call the MQTT loop
-  //mqttLoop();
+  client.loop();
 
   unsigned long currentMillis = millis();
 
@@ -28,7 +23,7 @@ void loop() {
     switch(puzzleState) {
       case Initialising:
         Serial.println(F("Initialising"));
-        initPuzzleStates();
+        //initPuzzleStates();
         puzzleState = Running;
         break;
       case Running:

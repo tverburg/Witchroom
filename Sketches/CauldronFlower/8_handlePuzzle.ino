@@ -8,7 +8,9 @@ bool openFlower() {
 
   // check if we reached the end
   uint8_t endStopValue = digitalRead(lowerStopPin);
+
   if(endStopValue == LOW) {
+    Serial.println("Reached the lower pin, stop it");
     opening = false;
   }
 
@@ -29,6 +31,7 @@ bool closeFlower() {
 
   if(endStopValue == LOW) {
     closing = false;
+    Serial.println("-----");
   }
 
   if(closing) {
@@ -42,10 +45,12 @@ void solve() {
   Serial.println(F("Open Flower"));
   open = true;
   inProgress = true;
+  makeRed();
 }
 
-void reset() {
+void  reset() {
   Serial.println(F("Reset Flower"));
   open = false;
   inProgress = true;
+  makeBlue();
 }

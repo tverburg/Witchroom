@@ -10,7 +10,7 @@ void manageFrontDoor(bool open) {
   }
 }
 
-void manageHerbs(solve) {
+void manageHerbs(bool solve) {
   if(solveHerbs) {
     //send a signal to open the cage
     digitalWrite(solveHerbsPuzzlePin, HIGH);
@@ -18,6 +18,6 @@ void manageHerbs(solve) {
   }
 }
 
-void manageSmoke(activate) {
+void manageSmoke(bool activate) {
 
 }

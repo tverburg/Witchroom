@@ -18,3 +18,4 @@ bool solved = false;
 
 const uint8_t alchemistReaderPinA = 8;
 const uint8_t alchemistReaderPinB = 9;
+const uint8_t alchemistReaderPinC = A0;
