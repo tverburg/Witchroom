@@ -59,12 +59,15 @@ void onSolve() {
   solved = true;
 }
 
-void lockLid() {
-  //Serial.println("Lock lid");
+void lockLid(uint8_t i) {
+  Serial.print("---->");
+  Serial.print(i);
+  Serial.println("lock");
+  Serial.println("Lock lid");
   digitalWrite(lockPin, HIGH);
 } 
 
 void unlockLid() {
-  //Serial.println("Unlock lid");
+  Serial.println("Unlock lid");
   digitalWrite(lockPin, LOW);
 } 
