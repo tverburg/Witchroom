@@ -1,11 +1,16 @@
+#define myI2cAddress 8 //I2C address this runewall arduino uses
+#include <Wire.h>
+
 //PIN declarations
-const int sigMuxRunePin = 18;
-const int r0 = 14;
-const int r1 = 15;
-const int r2 = 16;
-const int r3 = 17;
+const int sigMuxRunePin = 14; 
+const int r0 = 13; //A0
+const int r1 = 15; //A1
+const int r2 = 16; //A2
+const int r3 = 17; //A3
 const int lightPins[] = {2,3,4,5,6,7,8,9,10,11};
 const int lockPin = 12;
+
+char runesState[22] = "0,0,0,0,0,0,0,0,0,0:0"; 
 
 /*
 De muur der Runen bestaat uit 10 runen die verschillende afbeeldingen voorstellen.
@@ -25,10 +30,14 @@ boolean resetting = false;
 boolean solved = false;
 int activeRunes[solutionLength];
 int numberOfRunesActive = 0;
-long inactiveSeconds = 5000;
+long inactiveSeconds = 10000;
 long currentTime;
 
 void setup() {
+  Wire.begin(myI2cAddress);     // join i2c bus with address #8
+  Wire.onRequest(requestEvent); // register event
+  Wire.onReceive(receiveEvent); // register event
+
   Serial.begin(9600);
 
   pinMode(sigMuxRunePin, INPUT_PULLUP);
@@ -46,14 +55,19 @@ void setup() {
   }
   resetLights();
   currentTime = millis();
+
+  resetting = false;
+  solved = false;
 }
+
+void(* resetFunc) (void) = 0; //declare reset function @ address 0
 
 void loop() {
   //printRuneState();
-  //if(millis() > currentTime + inactiveSeconds){
+  // if(millis() > currentTime + inactiveSeconds){
   //  currentTime = millis();
   //  resetLights();
-  //}
+  // }
 
   if (resetting) {
     if (checkIfRunesAreDormant()) {
@@ -77,6 +91,9 @@ void loop() {
             numberOfRunesActive++;
             toggleLight(i+2, HIGH);
 
+            uint8_t runeIndex = i*2; // the locaion of the rune in the statestring is twice the index because of the seperating comma
+            runesState[runeIndex] = '1';
+
             Serial.print("rune: ");
             Serial.print(i);
             Serial.print(" is now active.");
@@ -97,6 +114,11 @@ void loop() {
 }
 
 void toggleLight(int light, int state){
+  Serial.print("toggleLight() ");
+  Serial.print(light);
+  Serial.print(" to: ");
+  Serial.println(state);
+
   digitalWrite(light, state);
 }
 
@@ -127,6 +149,9 @@ void reset(){
   numberOfRunesActive = 0;
   for (int i = 0; i < numberOfRunes; i++) {
     runes[i].isActive = false;
+
+    uint8_t runeIndex = i*2; // the locaion of the rune in the statestring is twice the index because of the seperating comma
+    runesState[runeIndex] = '0';
   }
 }
 
@@ -147,6 +172,8 @@ boolean checkIfRunesAreDormant(){
 void solve(){
   solved = true;
   digitalWrite(lockPin, HIGH);
+
+  runesState[20] = '1';
 }
 
 void printRuneState()
@@ -206,4 +233,26 @@ int readMuxRunes(int channel){
 
   //return the value
   return val;
+}
+
+// function that executes whenever data is requested by master
+// this function is registered as an event, see setup()
+void requestEvent() {
+  Serial.println(runesState);
+  Wire.write(runesState);
+}
+
+void receiveEvent(int howMany)
+{
+  int actionId = Wire.read();    // receive byte as an integer
+  Serial.println(actionId);         // print the integer
+  if(actionId == 0) {
+    Serial.println("go reset");  
+    solved = false;
+    reset();
+    resetFunc();
+  } else if(actionId == 1) {
+    Serial.println("go solve");   
+    solve();
+  }
 }

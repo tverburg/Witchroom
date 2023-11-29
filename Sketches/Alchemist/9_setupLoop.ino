@@ -13,9 +13,9 @@ void setup() {
   pinMode(lidButtonPin, INPUT_PULLUP);
   pinMode(alchemistReaderPinA, INPUT);
   pinMode(alchemistReaderPinB, INPUT);
-  pinMode(alchemistReaderPinC, INPUT);
+  // pinMode(alchemistReaderPinC, INPUT);
 
-  analogReference(INTERNAL);
+  // analogReference(INTERNAL);
 
   //init pin values
   digitalWrite(dirPin, HIGH);
@@ -38,16 +38,15 @@ void loop() {
 
       bool pieceA = digitalRead(alchemistReaderPinA);
       bool pieceB = digitalRead(alchemistReaderPinB);
-      bool pieceC = analogRead(alchemistReaderPinC);
 
       Serial.print("pieceASolved: ");
       Serial.print(pieceA);
       Serial.print(", pieceBSolved:");
-      Serial.print(pieceB);
-      Serial.print(", pieceCSolved:");
-      Serial.println(pieceC);
+      Serial.println(pieceB);
 
       if(lidButtonState == LOW) {
+
+
        // Serial.println("lid button pushed, lid is closed, start checking for correct content");
        // Serial.print("pieces solved : ");
        // Serial.println(pieceASolved && pieceBSolved);
@@ -56,13 +55,13 @@ void loop() {
           Serial.println("start progress");
           delay(500);
           // make sure the lid is locked and start the motors
-          lockLid();
+          lockLid(3);
           inProgress = true;
         } else {
           unlockLid();
         }
       } else {
-        lockLid();
+        lockLid(2);
       }
     } else {
       onSolve();
@@ -72,7 +71,7 @@ void loop() {
     if(lidButtonState == LOW) {
       unlockLid();
     } else {
-      lockLid();
+      lockLid(1);
     }
   }
 }

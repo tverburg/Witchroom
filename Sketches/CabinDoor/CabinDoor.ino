@@ -4,7 +4,7 @@
 
 // UTP constants
 byte mac[]    = { 0xAA, 0xBB, 0xCC, 0xDD, 0x10, 0x11 };
-IPAddress ip(192, 168, 178, 25);
+//IPAddress ip(192, 168, 178, 25);
 IPAddress server(192, 168, 178, 24);
 EthernetClient ethClient;
 // Unique name of this device, used as client ID for MQTT server and topic name

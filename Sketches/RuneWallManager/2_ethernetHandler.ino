@@ -21,23 +21,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   else if (strcmp(topic,subTopics[1])==0){
     //solve herbs
-    manageHerbs(true);
+    solve();
   } 
   else if (strcmp(topic,subTopics[2])==0){
     // open front door
-    manageFrontDoor(true);
-  } 
-  else if (strcmp(topic,subTopics[3])==0){
-    // close front door
-    manageFrontDoor(false);
-  } 
-  else if (strcmp(topic,subTopics[4])==0){
-    // activate smoke machine
-    manageSmoke(true);
-  } 
-  else if (strcmp(topic,subTopics[5])==0){
-    // deactivate smoke machine
-    manageSmoke(false);
+    reset();
   } 
 }
 
@@ -45,9 +33,8 @@ boolean reconnect() {
     if (client.connect(deviceID, "shape", "escape")) {
       Serial.println(F("connected. start subscriptions"));
       client.publish(pubTopics[0], "connected");
-      // Subscribe to topics meant for this device
-      
 
+      // Subscribe to topics meant for this device
       for (int i = 0 ; i < numberOfSubscriptions; i++) {
         Serial.print("Subscription for '");
         Serial.print(subTopics[i]);
@@ -79,10 +66,21 @@ bool valueToBool(int value) {
 
 void mqttEthernetSetup() {
   Serial.println(F("mqttEthernetSetup"));
-  //set the topics for this device
-  //snprintf(listenerTopic, 32, "%s/%s/control", nameSpace, deviceID);
 
-  Ethernet.begin(mac);
+  Ethernet.begin(mac,ip);
+/*
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("Failed to configure Ethernet using DHCP");
+    if (Ethernet.hardwareStatus() == EthernetNoHardware) {
+      Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
+    } else if (Ethernet.linkStatus() == LinkOFF) {
+      Serial.println("Ethernet cable is not connected.");
+    }
+  }
+  */
+  // print your local IP address:
+  Serial.print("My IP address: ");
+  Serial.println(Ethernet.localIP());
 
   client.subscribe("witchroom/manage/#");
 
@@ -102,6 +100,7 @@ void mqttLoop()
     }
   } else {
     // Client connected
+    client.loop();
   }
   Ethernet.maintain();
 }
