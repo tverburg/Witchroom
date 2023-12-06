@@ -13,6 +13,7 @@ void setup() {
 
 void loop() {
   mqttLoop();
+  requestRuneLog();
   
   currentMillis = millis();  
 

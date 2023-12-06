@@ -1,3 +1,12 @@
+void requestRuneLog() {
+  Wire.requestFrom(runeWallI2cAddress, 21);    // request the status of the runewall 16 bytes from runewall
+  while (Wire.available()) {
+    char c = Wire.read(); // receive a byte as character
+    Serial.print(c);
+  }
+  Serial.println();
+}
+
 void requestRuneStatus() {
   Wire.requestFrom(runeWallI2cAddress, 21);    // request the status of the runewall 16 bytes from runewall
 

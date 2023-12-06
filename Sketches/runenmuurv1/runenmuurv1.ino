@@ -38,9 +38,10 @@ void setup() {
   Wire.onRequest(requestEvent); // register event
   Wire.onReceive(receiveEvent); // register event
 
-  Serial.begin(9600);
+  Serial.begin(115200);
+  Serial.println("init setup");
 
-  pinMode(sigMuxRunePin, INPUT_PULLUP);
+  pinMode(sigMuxRunePin, INPUT);
   pinMode(r0, OUTPUT); 
   pinMode(r1, OUTPUT); 
   pinMode(r2, OUTPUT); 
@@ -50,6 +51,14 @@ void setup() {
   }
   pinMode(lockPin, OUTPUT);
 
+   for(int i = 0; i < numberOfRunes; i++){
+
+        int value = readMuxRunes(i);
+        Serial.print(value);
+        Serial.print(",");
+        }
+        Serial.println("----");
+
   for(int i = 0; i < numberOfRunes; i++){
     runes[i].isActive = false;
   }
@@ -58,6 +67,7 @@ void setup() {
 
   resetting = false;
   solved = false;
+  Serial.println("setup done");
 }
 
 void(* resetFunc) (void) = 0; //declare reset function @ address 0
