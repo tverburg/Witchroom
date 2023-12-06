@@ -47,8 +47,8 @@ unsigned long t = 0;
 //dragon egg == loadcel 3
 //rock == loadcell 4
 //apple potion == loadcell 5
-const int ingredientsWeights[5] = {235, 325, 510, 215, 630};
-const int weightMargin = 40;
+const int ingredientsWeights[5] = {235, 325, 500, 340, 620};
+const int weightMargin = 30;
 int currentWeights[5];
 bool solved = false;
 bool finished = false;
