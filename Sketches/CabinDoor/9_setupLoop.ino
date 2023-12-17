@@ -8,11 +8,17 @@ void setup() {
 
   // setup the ethernet and mqtt connection
   puzzleSetup();
+
+  // for (int i = 0 ; i < numberOfSubscriptions; i++) {
+  //       Serial.print("Subscription check for '");
+  //       Serial.print(subTopics[i]);
+  //       Serial.print(" this is with index ");
+  //       Serial.println(i);
+  // }
 }
 
 void loop() {
-  // Call the MQTT loop
-  client.loop();
+  mqttLoop();
 
   unsigned long currentMillis = millis();
 
@@ -27,7 +33,7 @@ void loop() {
         puzzleState = Running;
         break;
       case Running:
-        Serial.println(F("Running"));
+        //Serial.println(F("Running"));
         if(checkIfPuzzleSolved()) {
           onSolve();
         }
