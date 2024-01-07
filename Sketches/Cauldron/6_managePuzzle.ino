@@ -17,6 +17,7 @@ void reset() {
   finished = false;
   solved = false;
   digitalWrite(flowerPin, HIGH);
+  sendReset();
   Serial.println(publishingTopic);
   client.publish(publishingTopic, "resetted");
 }
@@ -26,6 +27,19 @@ void solve(){
   digitalWrite(flowerPin, LOW);
   finished = true;
   solved = true;
+  sendSolve();
   Serial.println(publishingTopic);
   client.publish(publishingTopic, "solved");
+}
+
+void sendSolve() {
+  Wire.beginTransmission(7); // transmit to device #7 (crystal box)
+  Wire.write(1);              // sends one byte. 1 means solve
+  Wire.endTransmission();    // stop transmitting
+}
+
+void sendReset() {
+  Wire.beginTransmission(7); // transmit to device #7 (crystal box)
+  Wire.write(0);              // sends one byte. 0 means reset
+  Wire.endTransmission();    // stop transmitting
 }

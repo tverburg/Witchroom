@@ -50,3 +50,5 @@ char statusUpdateMessage[32];
 
 unsigned long previousMillis = 0;  // will store last time input was checked
 const long inputInterval = 1000;  // interval at which to check input
+uint8_t cageHighFrameCount = 0;   // amount of frames in a row the cage button is registered as high. use to check if its high for a prolonged period
+uint8_t cageTriggerFrameCount = 10;   // amount of frames in a row the cage button is registered as high. use to check if its high for a prolonged period

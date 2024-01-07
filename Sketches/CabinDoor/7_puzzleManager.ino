@@ -22,45 +22,47 @@ void openCage(int id) {
   Serial.println(id);
   // release maglock
   digitalWrite(cagelockPin, HIGH);
-  client.publish(pubTopics[4], 'opened');
+  client.publish(pubTopics[4], "opened");
 }
 
 void closeCage() {
   Serial.println(F("Reset the cage"));
   // release maglock
   digitalWrite(cagelockPin, LOW);
-  client.publish(pubTopics[5], 'resetted');
+  client.publish(pubTopics[5], "resetted");
 }
 
 void checkCageOpened() {
   int cageState = digitalRead(cagelockInputPin); // 0 is closed, 1 is open
-      Serial.println(cageState);
+      // Serial.println(cageState);
   if(cageState == HIGH) {
-
-    //wait a short period to make sure we have actual input and not some static
-    delay(500);
-    int currentCageState = digitalRead(cagelockInputPin); 
-    if(currentCageState == HIGH) {
-      Serial.println("opening!");
+    cageHighFrameCount++;
+//Serial.println("open cage?");
+    //count the number of update cycles the input registers high. when a tipping point is reached we can assume it is god input an not static
+    if(cageHighFrameCount >= cageTriggerFrameCount) {
+      Serial.println("opening cage!");
       //doublechecked the input. solve it
       openCage(2);
     }
+  } else {
+    cageHighFrameCount = 0;
   }
 }
 
 
 void checkDoorOpened() {
   int doorState = digitalRead(lockButtonInputPin); // 1 is closed, 0 is open
+  //Serial.println(doorState);
   if(doorState == 0) {
      Serial.println(F("Open the door"));
     // release maglock
     digitalWrite(doorLockPin, HIGH); 
-  }
+  } 
 }
 
 // Returns true if the puzzle is solved, false otherwise
 bool checkIfPuzzleSolved() {
-  Serial.print(F("checkIfPuzzleSolved: "));
+ Serial.print(F("checkIfPuzzleSolved: "));
 
   bool changed = false;
   int piece1ValueLast = piece1Value;
@@ -68,16 +70,21 @@ bool checkIfPuzzleSolved() {
   int piece3ValueLast = piece3Value;
   int piece4ValueLast = piece4Value;
 
-  //todo: main state checking/setting
 
-  //todo: piece1 state checking/setting
   piece1Value = digitalRead(piece1InputPin);
   piece2Value = digitalRead(piece2InputPin);
   piece3Value = digitalRead(piece3InputPin);
   piece4Value = digitalRead(piece4InputPin);
   changed = (piece1ValueLast != piece1Value) || (piece2ValueLast != piece2Value) || (piece3ValueLast != piece3Value) || (piece4ValueLast != piece4Value);
 
-  Serial.println(changed);
+Serial.print(piece1Value);
+Serial.print(F(", "));
+Serial.print(piece2Value);
+Serial.print(F(", "));
+Serial.print(piece3Value);
+Serial.print(F(", "));
+Serial.println(piece4Value);
+  
   if(changed) {
     Serial.println(F("it changed"));
     bool solved = !piece1Value && !piece2Value && !piece3Value && !piece4Value;

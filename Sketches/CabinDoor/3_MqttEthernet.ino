@@ -38,7 +38,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 boolean reconnect() {
-  Serial.println("attempt reconnect");
+  //Serial.println("attempt reconnect");
     if (client.connect(deviceID, "shape", "escape")) {
       Serial.println(F("connected. start subscriptions"));
       client.publish(pubTopics[0], "connected");
