@@ -6,7 +6,7 @@ char publishingTopic[32];
 long lastReconnectAttempt = 0;
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print(F("Message arrived ["));
+  //Serial.print(F("Message arrived ["));
   // Serial.print(topic);
   // Serial.print(F("] "));
   // for (int i=0;i<length;i++) {
