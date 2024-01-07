@@ -6,7 +6,7 @@
 #include <Wire.h>
 
 // UTP constants
-byte mac[]    = { 0xAA, 0xBB, 0xCC, 0xDD, 0x10, 0x13 };
+byte mac[]    = { 0x2C, 0xF7, 0xF1, 0x08, 0x33, 0x98 };
 IPAddress ip(192, 168, 178, 27);
 IPAddress server(192, 168, 178, 24);
 EthernetClient ethClient;
@@ -48,8 +48,8 @@ unsigned long t = 0;
 //dragon egg == loadcel 3
 //rock == loadcell 4
 //apple potion == loadcell 5
-const int ingredientsWeights[5] = {235, 325, 500, 340, 620};
-const int weightMargin = 30;
+const int ingredientsWeights[5] = {235, 325, 515, 630, 515};
+const int weightMargin = 60;
 int currentWeights[5];
 bool solved = false;
 bool finished = false;
