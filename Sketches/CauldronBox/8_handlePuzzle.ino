@@ -80,6 +80,7 @@ void reset() {
 
 void receiveEvent(int howMany)
 {
+  Serial.println(F("receiveEvent"));
   int command = Wire.read();    // receive byte as an integer
   if(command == 0) {
     reset();

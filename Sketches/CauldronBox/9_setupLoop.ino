@@ -1,6 +1,6 @@
 void setup() {
-  Wire.begin(4);
-  Wire.onReceive(receiveEvent);
+  // Wire.begin(7);
+  // Wire.onReceive(receiveEvent);
 
   Serial.begin(9600);
 
