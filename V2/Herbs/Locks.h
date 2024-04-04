@@ -8,19 +8,30 @@
 
 extern JsonDocument statusObj;
 
-//called once at start
-void setupLocks(){
-  //add every event controlled by this controller to status array
-  //Example:
-  //statusObj["l"]["event id"] = 1; //status op locks are saved here
-  //statusObj["ls"]["event id"] = "[2, 4, -8, 3, 2]"; //states of locks are saved here
+void openLock() {
+  digitalWrite(LOCK_PIN,HIGH); // Lock to OPEN
+  delay(400);
+  digitalWrite(LOCK_PIN,LOW); // Lock to CLOSED, don't wait too long. It will fry the lock
+  statusObj["l"][lockId] == 0; // make sure we reset the status so the lock won't fry
 }
 
+//called once at start
+void setupLocks(){
+  //init pin for maglock
+  pinMode(LOCK_PIN, OUTPUT);
+
+  //add every event controlled by this controller to status array
+  statusObj["l"][lockId] == 0;  // for now assume the lock is closed at init. No sensor available yet
+}
+
+//handle resetting locks
 void resetLocks() {
-  //handle resetting locks
+  //not needed for herbs
 }
 
 //called every loop
 void checkLocks(){
-  //handle lock stuff
+  if(statusObj["l"][lockId] == 1) {
+    openLock();
+  }
 }

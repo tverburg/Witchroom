@@ -7,18 +7,8 @@
 // -------------------------------------------------------
 extern JsonDocument statusObj;
 
-void solve(){
-  digitalWrite(LOCK_PIN,HIGH); // Lock to OPEN
-  delay(400);
-  digitalWrite(LOCK_PIN,LOW); // Lock to CLOSED, don't wait too long. It will fry the lock
-  statusObj["p"][herbsPuzzleId] = 1;
-}
-
 //called once at start
 void setupPuzzles() {
-  //init pin for maglock
-  pinMode(LOCK_PIN, OUTPUT);
-
   //init pins for mux reading
   pinMode(SIG_PIN, INPUT_PULLUP);
   pinMode(s0, OUTPUT); 
@@ -48,7 +38,6 @@ void resetPuzzleById(String puzzleId) {
 
 //called every loop
 void checkPuzzles() {
-  
   //not yet solved
   if (statusObj["p"][herbsPuzzleId] == 0) {
     //check for puzzle solve
@@ -64,7 +53,8 @@ void checkPuzzles() {
       }
       // if all pins are on their correct positions. puzzle is solved
       if(count == numberOfPins){
-        solve();
+        //The puzzle is solved
+        statusObj["p"][herbsPuzzleId] = 1; 
         time = millis();
       }
     }

@@ -8,7 +8,7 @@
 
 //component config
 #define herbsPuzzleId 1
-#define openDoorEventId 1
+#define lockId 1
 
 /** Author: Tom van den Bulk/Thijs Verburg
   Sketch voor de kruidenkist schuifpuzzel. Elk puzzelstuk heeft 2 contactpunten oftewel 2 reed switches.
