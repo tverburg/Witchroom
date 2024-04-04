@@ -3,8 +3,8 @@
 #define hasPuzzles true
 #define hasEvents true
 #define hasEffects false
-#define hasLocks true
-#define hasHints true
-#define hasTimer true
+#define hasLocks false
+#define hasHints false
+#define hasTimer false
 #define useLogging true
 #define useSerial true

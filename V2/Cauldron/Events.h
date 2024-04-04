@@ -8,23 +8,31 @@
 
 extern JsonDocument statusObj;
 
+void resetEvents() {
+  //handle resetting events
+  statusObj["e"][openBoxEvent] = 0; 
+  statusObj["e"][closeBoxEvent] = 0; 
+}
+
 //called once at start
 void setupEvents(){
   //add every event controlled by this controller to status array
-  //Example:
-  //statusObj["e"]["event id"] = 1; //status op events are saved here
-  //statusObj["es"]["event id"] = "[2, 4, -8, 3, 2]"; //states of events are saved here
-}
-
-void resetEvents() {
-  //handle resetting events
+  resetEvents();
 }
 
 void resetEventById(String eventId) {
-  //handle resetting specific event based on id
+  statusObj["e"][eventId] = 0; 
 }
 
 //called every loop
 void checkEvents(){
-  //handle event stuff
+  if(statusObj["e"][openBoxEvent] = 1) {
+    sendOpenBox();
+    statusObj["e"][openBoxEvent] = 1;
+  }
+
+  if(statusObj["e"][closeBoxEvent] = 1) {
+    sendCloseBox();
+    statusObj["e"][closeBoxEvent] = 1;
+  }
 }

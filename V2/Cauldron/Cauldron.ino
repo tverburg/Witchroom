@@ -1,3 +1,5 @@
+#include <HX711_ADC.h>
+#include <Wire.h>
 #include <ArduinoJson.h>
 #include "ActionTypes.h"
 #include "config.h"
