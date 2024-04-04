@@ -41,8 +41,10 @@ void onSolve() {
   digitalWrite(dirPin, HIGH);
   digitalWrite(enableMotorPin, LOW); // enable motor driver
 
+  uint16_t steps = 0;
+
   // Spin the stepper motor enough revolutions to move 1/3 of the box:
-  for (int i = 0; i < neededSteps * stepsPerRevolution; i++) {
+  for (int i = 0; i < steps; i++) {
     // These four lines result in 1 step:
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(stepperSpeed);

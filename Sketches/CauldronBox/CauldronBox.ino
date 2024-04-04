@@ -1,53 +1,26 @@
-/*Example sketch to control a stepper motor with A4988/DRV8825 stepper motor driver and Arduino without a library. More info: https://www.makerguides.com */
+#include <FastLED.h>
+#include <Wire.h>
 
-// Define stepper motor connections and steps per revolution:
-#define dirPin 2
-#define stepPin 3
-#define stepsPerRevolution 200
+const uint8_t stepCount = 170;
+uint16_t currentSteps = 0;
+const int stepperSpeed = 5000; //higher is slower
 
-void setup() {
-   Serial.begin(9600);
-  // Declare pins as output:
-  pinMode(stepPin, OUTPUT);
-  pinMode(dirPin, OUTPUT);
+uint8_t enableMotorPin = 4;
+uint8_t dirPin = 2;
+uint8_t stepPin = 3;
+uint8_t resetPin = 6;
+uint8_t sleepPin = 5; 
 
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  digitalWrite(5, HIGH);
-  digitalWrite(6, HIGH);
+// uint8_t upperStopPin = 3;
+// uint8_t lowerStopPin = 4;
+uint8_t manualPin = 12;    //  pin for controlling the box
+uint8_t endStopPin = 10;  // pin for the button which is pressed if the crystal is present
+uint8_t crystalPin = 9;  // pin for the button which is pressed if the crystal is present
+const uint8_t LED_PIN = 11;
 
-  Serial.println("Initialized");
-}
+bool inProgress = false;
+bool open = false;
+uint8_t previousInputState = 1;
 
-void loop() {
-  // Set the spinning direction clockwise:
-  digitalWrite(dirPin, HIGH);
-
-  Serial.println("clockwise 5 revolutions fast");
-  // Spin the stepper motor 5 revolutions fast:
-  for (int i = 0; i < 5 * stepsPerRevolution; i++) {
-    // These four lines result in 1 step:
-    digitalWrite(stepPin, HIGH);
-    delayMicroseconds(500);
-    digitalWrite(stepPin, LOW);
-    delayMicroseconds(500);
-  }
-
-  delay(1000);
-
-  // Set the spinning direction counterclockwise:
-  digitalWrite(dirPin, LOW);
-
-  Serial.println("counterclockwise 5 revolutions fast");
-
-  //Spin the stepper motor 5 revolutions fast:
-  for (int i = 0; i < 5 * stepsPerRevolution; i++) {
-    // These four lines result in 1 step:
-    digitalWrite(stepPin, HIGH);
-    delayMicroseconds(500);
-    digitalWrite(stepPin, LOW);
-    delayMicroseconds(500);
-  }
-
-  delay(1000);
-}
+//led color palette
+CRGBPalette16 gPal;

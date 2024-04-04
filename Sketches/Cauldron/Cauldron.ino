@@ -3,9 +3,10 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <PubSubClient.h>
+#include <Wire.h>
 
 // UTP constants
-byte mac[]    = { 0xAA, 0xBB, 0xCC, 0xDD, 0x10, 0x13 };
+byte mac[]    = { 0x2C, 0xF7, 0xF1, 0x08, 0x33, 0x98 };
 IPAddress ip(192, 168, 178, 27);
 IPAddress server(192, 168, 178, 24);
 EthernetClient ethClient;
@@ -16,16 +17,16 @@ char statusUpdateMessage[64];
 
 //pins
 const uint8_t HX711_d_1 = 14; //A0
-const uint8_t HX711_sck_1 = 2;
+const uint8_t HX711_sck_1 = 5;
 const uint8_t HX711_d_2 = 15; //A1
-const uint8_t HX711_sck_2 = 3;
+const uint8_t HX711_sck_2 = 6;
 const uint8_t HX711_d_3 = 16; //A2
-const uint8_t HX711_sck_3 = 4;
+const uint8_t HX711_sck_3 = 7;
 const uint8_t HX711_d_4 = 17; //A3
-const uint8_t HX711_sck_4 = 5;
-const uint8_t HX711_d_5 = 18; //A4
-const uint8_t HX711_sck_5 = 6;
-const uint8_t flowerPin =  7;
+const uint8_t HX711_sck_4 = 8;
+const uint8_t HX711_d_5 = 2; 
+const uint8_t HX711_sck_5 = 9;
+const uint8_t flowerPin =  3;
 
 //calibration values
 const float calibrationValue_1 = 1000.00;
@@ -47,8 +48,8 @@ unsigned long t = 0;
 //dragon egg == loadcel 3
 //rock == loadcell 4
 //apple potion == loadcell 5
-const int ingredientsWeights[5] = {235, 325, 500, 340, 620};
-const int weightMargin = 30;
+const int ingredientsWeights[5] = {235, 325, 515, 630, 515};
+const int weightMargin = 60;
 int currentWeights[5];
 bool solved = false;
 bool finished = false;
