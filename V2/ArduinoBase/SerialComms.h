@@ -36,7 +36,7 @@ void checkSerial() {
             //reset all puzzles, effects, events, locks etc
             resetComponents();
           }
-          #if hasPuzzles || hasEvents || hasLocks
+          #if hasPuzzles || hasEvents || hasLocks || hasEffects
           else if (messageObj["a"]==resetComponent) //check if action is reset component
           {
             //reset specific component
@@ -63,9 +63,13 @@ void checkSerial() {
                     resetEffectById(id);
                   }
                 #endif
+
+                Serial.println('k');
               }
             }
-          }        
+          }    
+          #endif    
+          #if hasPuzzles || hasEvents || hasLocks
           else if (messageObj["a"]==statusCheck) { //check if action is statusCheck of puzzles and events
             #if hasPuzzles
             convertPuzzleInputsToString();
