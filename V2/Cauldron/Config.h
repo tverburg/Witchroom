@@ -3,7 +3,7 @@
 #define controlerName "cauldron"
 
 //serial config
-#define baudRate 1000000
+#define baudRate 115200
 #define endMarker  '\n'
 
 //component config
