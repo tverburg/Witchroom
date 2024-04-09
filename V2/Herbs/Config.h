@@ -1,14 +1,15 @@
+#include "Arduino.h"
 //controller config
 #define controllerId 1
-#define controlerName "herbsController"
+#define controlerName "herbs"
 
 //serial config
-#define baudRate 1000000
+#define baudRate 115200
 #define endMarker  '\n'
 
 //component config
-#define herbsPuzzleId 1
-#define lockId 1
+#define herbsPuzzleId "1"
+#define lockId "1"
 
 /** Author: Tom van den Bulk/Thijs Verburg
   Sketch voor de kruidenkist schuifpuzzel. Elk puzzelstuk heeft 2 contactpunten oftewel 2 reed switches.
@@ -34,6 +35,8 @@ const int s3 = 11;
 // bool solved = false;
 const int numberOfPins = 10;
 long time;
-long resettime = 60000;
+long lockOpenTime = 400;
+boolean lockOpened = false;
+boolean lockActive = false;
 
 int herbsStatusses[] = {0,0,0,0,0,0,0,0,0,0};
