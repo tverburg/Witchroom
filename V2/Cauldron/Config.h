@@ -7,9 +7,9 @@
 #define endMarker  '\n'
 
 //component config
-#define cauldronPuzzle 1
-#define openBoxEvent 1
-#define closeBoxEvent 2
+#define cauldronPuzzle 4
+#define openBoxEvent 2
+#define closeBoxEvent 3
 
 char statusUpdateMessage[64];
 
@@ -24,7 +24,6 @@ const uint8_t HX711_d_4 = 17; //A3
 const uint8_t HX711_sck_4 = 8;
 const uint8_t HX711_d_5 = 2; 
 const uint8_t HX711_sck_5 = 9;
-
 const uint8_t crystalPin =  3;
 
 

@@ -158,8 +158,7 @@ void checkSerial() {
           #endif
           #if useLogging
           else if (messageObj["a"]==getControllerLog) { //check if action is updateStatus
-            Serial.println(totalLogString);
-            totalLogString = "";
+            printLogToSerial();
           }
           #endif
 

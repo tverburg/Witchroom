@@ -23,9 +23,6 @@ void setupJson() {
 }
 
 void setupComponents() {
-  #if useLogging
-    setupLogging();
-  #endif
   #if useSerial
     setupSerial();
   #endif

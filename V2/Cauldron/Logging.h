@@ -8,28 +8,47 @@
 // Dont log to much or make long string this can cause slows!!!!
 // -------------------------------------------------------
 
-#include "Memory.h"
+#include <avr/io.h>
 
-static int maxSize = 0; //only use 50% of ram size after initialization
-static String totalLogString = "";
+const int maxSize = (RAMEND-RAMSTART) * 0.1; // use only 10% of total memory
+static char totalLogString[maxSize] = {'|'};
+static int stringSize = 0;
 
-void setupLogging(){
-  maxSize = freeMemory() * 0.5;
+void clearLog() {
+  for(int i = 0; i < maxSize; i++) {
+    totalLogString[i]='|';
+  }
+  stringSize = 0;
 }
 
 void logString(const String &string) {
-  byte len = totalLogString.length();
-  if (string.length() + totalLogString.length() + 1 > maxSize) {
+  byte len = string.length();
+
+  if (stringSize + len > maxSize) 
+  {
     return;
   }
   
-  if (totalLogString.length() != 0) 
+  if (stringSize != 0) 
   {
-    totalLogString += "#";
+    totalLogString[stringSize] = '#';
+    stringSize += 1;
   }
 
-  totalLogString += string;
+  for(int i =0; i < len; i++ ) {
+    totalLogString[stringSize + i] = string[i];
+  }
+
+  stringSize += len;
 }
 
+void printLogToSerial() {
+  for(int i = 0; i < stringSize; i++) {
+    Serial.print(totalLogString[i]);
+  }
+  Serial.print('\n');
+
+  clearLog();
+}
 
 

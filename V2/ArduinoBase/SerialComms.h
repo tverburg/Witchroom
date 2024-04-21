@@ -21,7 +21,9 @@ void checkSerial() {
     DeserializationError error = deserializeJson(data, jsonString);
     //handel deserialization error
     if (error){
+      #if useLogging
       logString("Json parse error");// return succesfully update status
+      #endif
       return;
     }
     JsonObject messageObj = data.as<JsonObject>();
@@ -33,6 +35,7 @@ void checkSerial() {
           }
           else if (messageObj["a"]==resetController) //check if action is resetController 
           {
+            Serial.println('k');// return succesfully update status
             //reset all puzzles, effects, events, locks etc
             resetComponents();
           }
@@ -88,7 +91,9 @@ void checkSerial() {
                 if(statusObj.containsKey(type)){//check if status object has type
                   if(statusObj[type].containsKey(id)){ //check if type object has id
                     statusObj[type][id] = status; // save new status
+                    #if useLogging
                     logString("U"+type+id+"To"+status);
+                    #endif
                     Serial.println('k');// return succesfully update status
                   }
                 }
@@ -102,7 +107,7 @@ void checkSerial() {
                 String id = messageObj["d"]["i"];
                 clearInput(id);
 
-                Serial.println('k');// return succesfully update status
+                Serial.println('k');// return succesfully clear puzzle input
               }
             }
           }
@@ -153,8 +158,7 @@ void checkSerial() {
           #endif
           #if useLogging
           else if (messageObj["a"]==getControllerLog) { //check if action is updateStatus
-            Serial.println(totalLogString);
-            totalLogString = "";
+            printLogToSerial();
           }
           #endif
 

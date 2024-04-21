@@ -28,11 +28,11 @@ void resetEventById(String eventId) {
 void checkEvents(){
   if(statusObj["e"][openBoxEvent] = 1) {
     sendOpenBox();
-    statusObj["e"][openBoxEvent] = 1;
+    statusObj["e"][openBoxEvent] = 2;
   }
 
   if(statusObj["e"][closeBoxEvent] = 1) {
     sendCloseBox();
-    statusObj["e"][closeBoxEvent] = 1;
+    statusObj["e"][closeBoxEvent] = 2;
   }
 }
