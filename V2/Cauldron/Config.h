@@ -8,8 +8,7 @@
 
 //component config
 #define cauldronPuzzle 4
-#define openBoxEvent 2
-#define closeBoxEvent 3
+#define boxLock 2
 
 char statusUpdateMessage[64];
 

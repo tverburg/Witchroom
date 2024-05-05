@@ -7,6 +7,10 @@
 #include "Helpers.h"
 #include "StatusTypes.h"
 
+#if hasPuzzles || hasEvents || hasLocks
+static JsonDocument statusObj;
+#endif
+
 #if useLogging
 #include "Logging.h"
 #endif
@@ -43,15 +47,10 @@
 
 #include "Setup.h"
 
-#if hasPuzzles || hasEvents || hasLocks
-static JsonDocument statusObj;
-#endif
-
 //dont touch
 void setup() {
   setupJson();
   setupComponents();
-  setupLogging();
   logString("Strtd"); //started
 }
 
