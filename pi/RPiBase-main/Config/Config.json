@@ -1,0 +1,11 @@
+{
+    "serial":{
+        "port":"/dev/ttyS0",
+        "baudRate":1000000,
+        "endMarker":"\n"
+    },
+    "controller":{
+        "controllerId": 1,
+        "controllerName": "rotary"
+    }
+}
