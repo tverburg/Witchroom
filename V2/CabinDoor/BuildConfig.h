@@ -1,10 +1,10 @@
 //what types of code does controller have
 //set to false what you dont need
 #define hasPuzzles true
-#define hasEvents true
+#define hasEvents false
 #define hasEffects false
 #define hasLocks true
-#define hasHints true
-#define hasTimer true
+#define hasHints false
+#define hasTimer false
 #define useLogging true
 #define useSerial true

@@ -1,0 +1,10 @@
+{
+    "hasPuzzles": true,
+    "hasEvents": true,
+    "hasEffects": false,
+    "hasLocks": true,
+    "hasHints": true,
+    "hasTimer": true,
+    "useLogging": true,
+    "useSerial": true
+}

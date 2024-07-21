@@ -1,0 +1,3 @@
+Configure what type of component are used on this controller in buildconfig.json. Set to false what you dont use.
+
+Put all your config data in config.json per compontent. So every puzzle, event etc has its own config part just like controllers and serial
