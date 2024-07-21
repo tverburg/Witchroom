@@ -24,12 +24,10 @@ void resetLocks() {
 //called every loop
 void checkLocks(){
   if(statusObj["l"][boxLock] = 0) {
-    sendOpenBox();
     statusObj["l"][boxLock] = 2;
   }
 
   if(statusObj["l"][boxLock] = 3) {
-    sendCloseBox();
     statusObj["l"][boxLock] = 4;
   }
 }

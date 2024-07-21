@@ -1,0 +1,40 @@
+Install mqtt
+	# Run the following command to upgrade and update your system
+	sudo apt update && sudo apt upgrade
+	# To install the Mosquitto Broker enter these next commands
+	sudo apt install -y mosquitto mosquitto-clients
+	# make Mosquitto auto start when the Raspberry Pi boots
+	sudo systemctl enable mosquitto.service
+	# test the installation
+	mosquitto -v
+	
+Create a conf for the user "shape"
+	#create password file
+	sudo mosquitto_passwd -c /etc/mosquitto/passwd shape
+	
+	#open the conf
+	sudo nano /etc/mosquitto/mosquitto.conf
+	
+	#change the conf folder owner to the user 'shape'
+	sudo chown shape:shape -R /etc/mosquitto/conf.d
+	#create a custom config file
+	sudo cat > /etc/mosquitto/conf.d/shapeescape.conf
+	# enter the configuration lines
+	listener 1883
+	allow_anonymous false
+	require_certificate false
+	password_file /etc/mosquitto/passwd
+	listener 8883
+	protocol websockets
+	#[ctrl+d] to save
+	
+	# restart service
+	sudo systemctl restart mosquitto
+
+
+Install node-red
+	# script to install Node.js, npm and Node-RED onto a Raspberry Pi.
+	bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
+	# Autostart on boot
+	sudo systemctl enable nodered.service
+	# find it in the browser at  http://localhost:1880.

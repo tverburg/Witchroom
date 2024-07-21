@@ -1,7 +1,7 @@
 #include <ContinuousServo.h>
 #include <FastLED.h>
 
-ContinuousServo servo(5); // servo inits on pin 4
+ContinuousServo servo(4); // servo inits on pin 4
 uint8_t stepsize = 20;
 
 uint8_t upperStopPin = 3;

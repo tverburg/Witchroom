@@ -5,6 +5,7 @@
 //
 // THIS HAS BEEN PREBUILD DONT TOUCH!!!!
 // -------------------------------------------------------
+
 #if hasPuzzles || hasEvents || hasLocks
 extern JsonDocument statusObj;
 #endif
@@ -22,92 +23,92 @@ void checkSerial() {
     //handel deserialization error
     if (error){
       #if useLogging
-      logString("Json parse error");// return succesfully update status
+      logString(F("Json parse error"));// return succesfully update status
       #endif
       return;
     }
     JsonObject messageObj = data.as<JsonObject>();
-    if (messageObj.containsKey("i")){
-      if (messageObj["i"]==controllerId){
-        if(messageObj.containsKey("a")){
-          if (messageObj["a"]==ping){ //check if action is ping
-            Serial.println("pong");
+    if (messageObj.containsKey(F("i"))){
+      if (messageObj[F("i")]==controllerId){
+        if(messageObj.containsKey(F("a"))){
+          if (messageObj[F("a")]==ping){ //check if action is ping
+            Serial.println(F("pong"));
           }
-          else if (messageObj["a"]==resetController) //check if action is resetController 
+          else if (messageObj[F("a")]==resetController) //check if action is resetController 
           {
-            Serial.println('k');// return succesfully update status
+            Serial.println(F("k"));// return succesfully update status
             //reset all puzzles, effects, events, locks etc
             resetComponents();
           }
           #if hasPuzzles || hasEvents || hasLocks || hasEffects
-          else if (messageObj["a"]==resetComponent) //check if action is reset component
+          else if (messageObj[F("a")]==resetComponent) //check if action is reset component
           {
             //reset specific component
-            if(messageObj.containsKey("d")){//check if request object has data
-              if(messageObj["d"].containsKey("i")&&messageObj["d"].containsKey("t")){//check if data object contain i (id), t (type)
-                String type = messageObj["d"]["t"];
-                String id = messageObj["d"]["i"];
+            if(messageObj.containsKey(F("d"))){//check if request object has data
+              if(messageObj[F("d")].containsKey(F("i"))&&messageObj[F("d")].containsKey(F("t"))){//check if data object contain i (id), t (type)
+                String type = messageObj[F("d")][F("t")];
+                String id = messageObj[F("d")][F("i")];
 
                 #if hasPuzzles
-                  if (type == "p")
+                  if (type == F("p"))
                   {
                     resetPuzzleById(id);
                   }
                 #endif
                 #if hasEvents
-                  if (type == "e")
+                  if (type == F("e"))
                   {
                     resetEventById(id);
                   }
                 #endif
                 #if hasEffects
-                  if (type == "ef")
+                  if (type == F("ef"))
                   {
                     resetEffectById(id);
                   }
                 #endif
 
-                Serial.println('k');
+                Serial.println(F("k"));
               }
             }
           }    
           #endif    
           #if hasPuzzles || hasEvents || hasLocks
-          else if (messageObj["a"]==statusCheck) { //check if action is statusCheck of puzzles and events
+          else if (messageObj[F("a")]==statusCheck) { //check if action is statusCheck of puzzles and events
             #if hasPuzzles
             convertPuzzleInputsToString();
             #endif
 
             //send status json
             serializeJson(statusObj, Serial);
-            Serial.print("\n");
+            Serial.print(F("\n"));
           }
-          else if (messageObj["a"]==updateStatus) { //check if action is updateStatus
-            if(messageObj.containsKey("d")){//check if request object has data
-              if(messageObj["d"].containsKey("i")&&messageObj["d"].containsKey("t")&&messageObj["d"].containsKey("s")){//check if data object contain i (id), t (type), s (status)
-                String type = messageObj["d"]["t"];
-                String id = messageObj["d"]["i"];
-                int status = messageObj["d"]["s"];
+          else if (messageObj[F("a")]==updateStatus) { //check if action is updateStatus
+            if(messageObj.containsKey(F("d"))){//check if request object has data
+              if(messageObj[F("d")].containsKey(F("i"))&&messageObj[F("d")].containsKey(F("t"))&&messageObj[F("d")].containsKey(F("s"))){//check if data object contain i (id), t (type), s (status)
+                String type = messageObj[F("d")][F("t")];
+                String id = messageObj[F("d")][F("i")];
+                int status = messageObj[F("d")][F("s")];
                 if(statusObj.containsKey(type)){//check if status object has type
                   if(statusObj[type].containsKey(id)){ //check if type object has id
                     statusObj[type][id] = status; // save new status
                     #if useLogging
                     logString("U"+type+id+"To"+status);
                     #endif
-                    Serial.println('k');// return succesfully update status
+                    Serial.println(F("k"));// return succesfully update status
                   }
                 }
               }
             }
           }
           #if hasPuzzles
-          else if (messageObj["a"]==clearPuzzleInput) { //check if action is updateStatus
-            if(messageObj.containsKey("d")){//check if request object has data
-              if(messageObj["d"].containsKey("i")){//check if data object contain i (id), t (type), s (status)
-                String id = messageObj["d"]["i"];
+          else if (messageObj[F("a")]==clearPuzzleInput) { //check if action is updateStatus
+            if(messageObj.containsKey(F("d"))){//check if request object has data
+              if(messageObj[F("d")].containsKey(F("i"))){//check if data object contain i (id), t (type), s (status)
+                String id = messageObj[F("d")][F("i")];
                 clearInput(id);
 
-                Serial.println('k');// return succesfully clear puzzle input
+                Serial.println(F("k"));// return succesfully clear puzzle input
               }
             }
           }
@@ -115,56 +116,56 @@ void checkSerial() {
           #endif
 
           #if hasEffects
-          else if (messageObj["a"]==executeSpecial) { //check if action is updateStatus
-            if(messageObj.containsKey("d")){//check if request object has data
-              if(messageObj["d"].containsKey("n")&&messageObj["d"].containsKey("v")){//check if data object contain i (id), t (type), s (status)
-                String name = messageObj["d"]["n"];
-                String value = messageObj["d"]["v"];
+          else if (messageObj[F("a")]==executeSpecial) { //check if action is updateStatus
+            if(messageObj.containsKey(F("d"))){//check if request object has data
+              if(messageObj[F("d")].containsKey(F("n"))&&messageObj[F("d")].containsKey(F("v"))){//check if data object contain i (id), t (type), s (status)
+                String name = messageObj[F("d")][F("n")];
+                String value = messageObj[F("d")][F("v")];
 
                 receivedSpecial(name, value);
 
-                Serial.println('k');// return succesfully executed special
+                Serial.println(F("k"));// return succesfully executed special
               }
             }
           }
           #endif
           #if hasTimer
-          else if (messageObj["a"]==updateTime) { //check if action is updatetime
-            if(messageObj.containsKey("d")){//check if request object has data
-              if(messageObj["d"].containsKey("v")){//check if data object contain i (id), t (type), s (status)
-                String value = messageObj["d"]["v"];
+          else if (messageObj[F("a")]==updateTime) { //check if action is updatetime
+            if(messageObj.containsKey(F("d"))){//check if request object has data
+              if(messageObj[F("d")].containsKey(F("v"))){//check if data object contain i (id), t (type), s (status)
+                String value = messageObj[F("d")][F("v")];
 
                 receivedTime(value);
 
-                Serial.println('k');// return succesfully update time
+                Serial.println(F("k"));// return succesfully update time
               }
             }
           }
           #endif
 
           #if hasHints
-          else if (messageObj["a"]==displayHint) { //check if action is displayhint
-            if(messageObj.containsKey("d")){//check if request object has data
-              if(messageObj["d"].containsKey("v") && messageObj["d"].containsKey("t")){//check if data object contain i (id), t (type), s (status)
-                String type = messageObj["d"]["t"];
-                String value = messageObj["d"]["v"];
+          else if (messageObj[F("a")]==displayHint) { //check if action is displayhint
+            if(messageObj.containsKey(F("d"))){//check if request object has data
+              if(messageObj[F("d")].containsKey(F("v")) && messageObj[F("d")].containsKey(F("t"))){//check if data object contain i (id), t (type), s (status)
+                String type = messageObj[F("d")][F("t")];
+                String value = messageObj[F("d")][F("v")];
 
                 receivedHint(type, value);
 
-                Serial.println('k');// return succesfully update time
+                Serial.println(F("k"));// return succesfully update time
               }
             }
           }
           #endif
           #if useLogging
-          else if (messageObj["a"]==getControllerLog) { //check if action is updateStatus
+          else if (messageObj[F("a")]==getControllerLog) { //check if action is updateStatus
             printLogToSerial();
           }
           #endif
 
           //if command not recognized
           else {
-            Serial.println("Command not recognized");
+            Serial.println(F("Command not recognized"));
           }
         }
       }
