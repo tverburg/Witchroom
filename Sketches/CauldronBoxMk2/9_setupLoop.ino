@@ -1,16 +1,26 @@
 void setup() {
+  Wire.begin(7);
+  Wire.onReceive(receiveEvent);
+
   Serial.begin(9600);
 
-  Serial.println(F("start"));
+  delay(1000); // sanity wait
 
-  //init inputs
+  Serial.println(F("start Serial communication"));
+
+  // init inputs
+  pinMode(crystalPin, INPUT_PULLUP);
   pinMode(openStopPin, INPUT_PULLUP);
   pinMode(closeStopPin, INPUT_PULLUP);
 
-  // init servo control wire 
-  myservo.attach(servoPin);
-  // Servo is stationary.
-  // myservo.write(90);
+  pinMode(resetPin, OUTPUT);
+  pinMode(sleepPin, OUTPUT);
+
+  // enable motor so the box cant be openend manually
+  enableMotor();
+
+  // open box on start
+  open();
 
   ledSetup();
 
@@ -18,34 +28,27 @@ void setup() {
 }
 
 void loop() {
-  currentMillis = millis();   // capture the latest value of millis()
-
-
-   // Servo spins forward at full speed for 1 second.
-  myservo.write(180);
-  // delay(5000);
-  // // Servo is stationary for 1 second.
-  // myservo.write(180);
-  // delay(5000);
-
-
-
-
-
-  if(!open && inProgress) {
-    Serial.println("opening");
-    
-  } else if (open && inProgress) {
-    Serial.println("closing");
+  //open
+  if(doorState == 1) {
+    Serial.println("state is open, set to opening");
+    doorState = 2;
+  }
+  //opening
+  if(doorState == 2) {
+    Serial.println("state is opening ");
+    open();
   }
 
-
-  //done, temporary
-  if(inProgress) {
-    Serial.println("done");
-    inProgress = false;
+  //close
+  if(doorState == 4) {
+    Serial.println("state is close, set to closing");
+    doorState = 5;
   }
-
+  //closing
+  if(doorState == 5) {
+    Serial.println("state is closing");
+    close();
+  }
 
   if (Serial.available() > 0) {
     // read the incoming byte:
@@ -55,11 +58,18 @@ void loop() {
     Serial.print("I received: ");
     Serial.println(incomingByte);   
 
-    // 0 = 48 (reset/close), 1 = 49 (solve/open), enter=10
-    if(incomingByte == 48) {
-      //reset();
+    // 0 = 48 (reset/close), 
+    // 1 = 49 (solve/open), 
+    // 2 = 50 stop motor
+    // enter=10
+    if(incomingByte == 48) { 
+      doorState = 4;  // 0 = close
     } else if(incomingByte == 49) {
-      //solve();
+      doorState = 1;  // 1 = open
+    } else if(incomingByte == 50) {//2
+      doorState = 3;  // 2 = stop opening
+    } else if(incomingByte == 51) {//3
+      doorState = 6;  // 3 = stop closing
     }
   }
 

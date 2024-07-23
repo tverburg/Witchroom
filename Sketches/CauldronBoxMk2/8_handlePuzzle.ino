@@ -1,52 +1,95 @@
 // Start opening the box. returns true while closing. false if finished
-bool openBox() {
+uint8_t openBox() {
   uint8_t endStopState = digitalRead(openStopPin); 
-  bool opening = (endStopState == HIGH); 
+  uint8_t opening = (endStopState == HIGH ? 2 : 3);
 
-  // if(opening){
-  //   // Set the spinning direction clockwise
-  //   digitalWrite(dirPin, HIGH);
+  Serial.println(endStopState);
+  Serial.println(opening); 
 
-  //   turnMotor(5);
-  // }
+  if(opening == 2){
+    // Set the spinning direction counterclockwise
+    digitalWrite(dirPin, HIGH);
+
+    turnMotor();
+  }
 
   return opening;
 }
 
 // Start closing the box. returns true while closing. false if finished
-bool closeBox() {
-  bool opening = true;
+uint8_t closeBox() {
+  uint8_t endStopState = digitalRead(closeStopPin); 
+  uint8_t closing = (endStopState == LOW ? 5 : 6);
 
-  // // Set the spinning direction clockwise
-  // digitalWrite(dirPin, LOW);
+  Serial.println(endStopState);
+  Serial.println(closing); 
 
-  // enableMotor();
-  // turnMotor(stepCount);
-  // //disableMotor();
+  if(closing == 5){
+    // Set the spinning direction counterclockwise
+    digitalWrite(dirPin, LOW);
 
-  // opening = false;
+    turnMotor();
+  }
 
-  return opening;
+  return closing;
 }
 
+void enableMotor() {
+  Serial.println(F("enableMotor"));
+  digitalWrite(enableMotorPin, LOW); // enable motor driver
+  digitalWrite(sleepPin, HIGH); 
+  digitalWrite(resetPin, HIGH); 
+}
 
+void disableMotor() {
+  Serial.println(F("disableMotor"));
+  digitalWrite(enableMotorPin, HIGH); // disable motor driver
+  digitalWrite(sleepPin, LOW); 
+  digitalWrite(resetPin, LOW); 
+}
 
-void solve() {
+void turnMotor() {
+  // Spin the stepper motor enough revolutions to move 1/3 of the box:
+  for (int i = 0; i < steps; i++) {
+    // These four lines result in 1 step:
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(stepperSpeed);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(stepperSpeed);
+  }
+  
+}
+
+void open() {
   Serial.println(F("Solve: open box"));
   makeRed();
-  inProgress = openBox();
+  enableMotor();
+  doorState = openBox();
 
-  if(inProgress) {
-    open = false;
-  } else {
-    open = true;
+  if(doorState == 3) {
+    Serial.println(F("done, disabe motor"));
+    disableMotor();
+  }   
+}
+
+void close() {
+  Serial.println(F("Reset: close box"));
+  makeBlue();
+  enableMotor();
+  doorState = closeBox();
+
+  if(doorState == 6) {
+    Serial.println(F("done, keep active motor")); 
   }
 }
 
-void reset() {
-  Serial.println(F("Reset: close box"));
-  makeBlue();
-  closeBox();
-
-  open = false;
+void receiveEvent(int howMany)
+{
+  Serial.println(F("receiveEvent"));
+  int command = Wire.read();    // receive byte as an integer
+  if(command == 0) {
+    doorState = 4;  // 0 = close
+  } else if(command == 1) {
+    doorState = 1;  // 1 = open
+  }
 }

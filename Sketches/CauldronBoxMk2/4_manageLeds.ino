@@ -1,5 +1,7 @@
+//led color palette
+CRGBPalette16 gPal;
 
-const uint8_t NUM_LEDS = 30;
+const uint8_t NUM_LEDS = 60;
 const uint8_t BRIGHTNESS = 200;
 const uint8_t FRAMES_PER_SECOND = 60;
 bool gReverseDirection = false;
@@ -14,8 +16,7 @@ void makeRed() {
 }
 
 void ledSetup() {
-  delay(3000); // sanity delay
-  FastLED.addLeds<WS2811, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<WS2812, LED_PIN, RGB>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( BRIGHTNESS );
   
   // this palette is like the heat colors, but blue/aqua instead of red/yellow
