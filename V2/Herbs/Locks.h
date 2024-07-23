@@ -13,6 +13,7 @@ extern JsonDocument statusObj;
 void setupLocks(){
   //init pin for maglock
   pinMode(LOCK_PIN, OUTPUT);
+  digitalWrite(LOCK_PIN,LOW); // Lock to CLOSED
 
   //add every event controlled by this controller to status array
   statusObj["l"][lockId] = 0;  // for now assume the lock is closed at init. No sensor available yet
@@ -20,7 +21,6 @@ void setupLocks(){
 
 //handle resetting locks
 void resetLocks() {
-  logString("reset herbs lock");
   lockOpened = false;
   lockActive = false;
 }

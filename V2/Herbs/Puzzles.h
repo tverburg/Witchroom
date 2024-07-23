@@ -16,9 +16,6 @@ void setupPuzzles() {
   pinMode(s2, OUTPUT); 
   pinMode(s3, OUTPUT); 
 
-  //set lock to closed as default
-  digitalWrite(LOCK_PIN, LOW);
-
   //track time for reset game check todo: check if it needs to be removed because the control computer will handle this
   //time = millis();
 
@@ -58,21 +55,6 @@ void checkPuzzles() {
       }
     }
   }
-  //if the puzzle is solved. Check every [resettime] milliseconds if it's changed back to an unsolved state
-  //else {
-  //  if ((time + resettime) < millis()) {
-  //    int count = 0;
-  //   for (int i = 0; i < numberOfPins; i ++) {
-  //      if (readMux(i) == 0) {
-  //        count++;
-  //      }
-  //    }
-  //    if (count != numberOfPins) {
-  //      statusObj["p"][herbsPuzzleId] = 0;
-  //    }
-  //    time = millis();
-  //  }
-  //}
 }
 
 //called when host pc is asking puzzle inputs
