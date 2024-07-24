@@ -4,6 +4,7 @@
 #include "buildConfig.h"
 #include "Helpers.h"
 #include "StatusTypes.h"
+#include <FastLED.h>
 
 #if hasPuzzles || hasEvents || hasLocks
 static JsonDocument statusObj;
