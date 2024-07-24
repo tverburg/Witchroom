@@ -6,6 +6,7 @@
 // Use predefined functions below to control all effects on controller
 // -------------------------------------------------------
 
+
 //called once at start
 void setupEffects(){
   //do setup for effects here
@@ -29,4 +30,5 @@ void checkEffects(){
 //only save data needed for special execute in checkEffects()
 void receivedSpecial(String name, String value) {
   //handle receiving special effects
+  
 }

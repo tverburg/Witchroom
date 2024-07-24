@@ -8,26 +8,24 @@
 
 extern JsonDocument statusObj;
 
+static boolean lockOpening = false;
+static int time = 0;
+const int openTime = 4000;
+
 //called once at start
 void setupLocks(){
   //add every event controlled by this controller to status array
   //Example:
-  //statusObj["l"]["event id"] = 1; //status op locks are saved here
-  //statusObj["ls"]["event id"] = "[2, 4, -8, 3, 2]"; //states of locks are saved here
-  statusObj["l"][boxLock] = openedlock;
+  //statusObj["l"]["lock id"] = 2; //status op locks are saved here
+  //statusObj["ls"]["lock id"] = 2; //states of locks are saved here
 }
 
 void resetLocks() {
-  statusObj["l"][boxLock] = openenlock;
+  //handle resetting locks
 }
 
 //called every loop
 void checkLocks(){
-  if(statusObj["l"][boxLock] = 0) {
-    statusObj["l"][boxLock] = 2;
-  }
 
-  if(statusObj["l"][boxLock] = 3) {
-    statusObj["l"][boxLock] = 4;
-  }
 }
+      

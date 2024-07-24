@@ -49,7 +49,6 @@ static JsonDocument statusObj;
 void setup() {
   setupJson();
   setupComponents();
-  logString("Strtd"); //started
 }
 
 //dont touch
