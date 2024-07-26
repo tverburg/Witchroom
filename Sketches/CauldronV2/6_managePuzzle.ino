@@ -7,27 +7,27 @@ void checkSolution(){
     }
   }
   if (correctWeights == 5) {
-   // Serial.println(F("solved bitches"));
+    Serial.println(F("solved bitches"));
     solved = true;
   }
 }
 
 void reset() {
-  //Serial.println(F("reset, publish to "));
+  Serial.println(F("reset, publish to "));
   finished = false;
   solved = false;
   digitalWrite(flowerPin, HIGH);
-  //sendReset();
-  client.publish("witchroom/puzzles/cauldron/resetted", "");
+  sendReset();
+  client.publish(pubResetted, "");
 }
 
 void solve(){
-  //Serial.println(F("solve"));
+  Serial.println(F("solve"));
   digitalWrite(flowerPin, LOW);
   finished = true;
   solved = true;
-  //sendSolve();
-  client.publish("witchroom/puzzles/cauldron/solved", "");
+  sendSolve();
+  client.publish(pubSolved, "");
 }
 
 void sendSolve() {

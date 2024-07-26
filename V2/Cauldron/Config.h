@@ -3,12 +3,12 @@
 #define controlerName "cauldron"
 
 //serial config
-#define baudRate 1000000
+#define baudRate 9600
 #define endMarker  '\n'
 
 //component config
-#define boxLockId 5
-#define boxLightsEffectId 1
+#define boxLockId "5"
+#define boxLightsEffectId "1"
 
 //stepper motor settings
 const int stepperSpeed = 5000; //higher is slower

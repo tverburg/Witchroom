@@ -3,7 +3,7 @@
 #define controlerName "rotary"
 
 //serial config
-#define baudRate 1000000
+#define baudRate 250000
 #define endMarker  '\n'
 
 //component config
