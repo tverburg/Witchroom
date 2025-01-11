@@ -1,5 +1,5 @@
 void setup() {
-  Wire.begin();
+  Wire.begin(9);
   
   Serial.begin(9600);
   mqttEthernetSetup();

@@ -4,7 +4,7 @@
 #define controlerName "herbs"
 
 //serial config
-#define baudRate 115200
+#define baudRate 9600
 #define endMarker  '\n'
 
 //component config
@@ -36,7 +36,5 @@ const int s3 = 11;
 const int numberOfPins = 10;
 long time;
 long lockOpenTime = 400;
-boolean lockOpened = false;
-boolean lockActive = false;
 
 int herbsStatusses[] = {0,0,0,0,0,0,0,0,0,0};

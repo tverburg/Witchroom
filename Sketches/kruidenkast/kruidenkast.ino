@@ -26,6 +26,8 @@ long time;
 long resettime = 60000;
 
 void setup(){
+  Serial.begin(9600);
+  Serial.println("Setup");
   pinMode(LOCK_PIN, OUTPUT);
   pinMode(FAIL_SAFE_PIN, INPUT_PULLUP);
   pinMode(SIG_PIN, INPUT_PULLUP);
@@ -35,7 +37,7 @@ void setup(){
   pinMode(s3, OUTPUT); 
 
   digitalWrite(LOCK_PIN, LOW);
-  Serial.begin(9600);
+  
   time = millis();
 }
 
@@ -44,12 +46,14 @@ void loop(){
   if (!solved){
     //check for manual solve command
     bool failSaveActive = digitalRead(FAIL_SAFE_PIN) == LOW;
-    if(FAIL_SAFE_PIN == HIGH){
+    if(failSaveActive){
+       Serial.print("manual reset requested");
       //wait for a short period to ensure we've received an actual command and no static
       delay(300);
       //still LOW? activate failsave
       bool failSaveStillActive = digitalRead(FAIL_SAFE_PIN) == LOW;
       if(failSaveStillActive) {
+        Serial.print("manual reset activated");
         solve();
       }
     }
@@ -57,16 +61,21 @@ void loop(){
     else{
       int count = 0;
 
-      for(int i = 0; i < numberOfPins; i ++){
+      for(int i = 0; i < numberOfPins; i ++){ 
         if(readMux(i) == 0){
+         Serial.print("1,");
           count++;
+        } else {
+           Serial.print("0,");
         }
+         
         // if all pins are on their correct positions. puzzle is solved
         if(count == numberOfPins){
           solve();
           time = millis();
         }
       }
+      Serial.println();
     }
   }
   //if the puzzle is solved. Check every [resettime] milliseconds if it's changed back to an unsolved state

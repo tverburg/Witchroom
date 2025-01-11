@@ -34,15 +34,16 @@ void startupScales(){
   if (LoadCell_5.getTareTimeoutFlag()) {
     Serial.println(F("Timeout, check MCU>HX711 no.5 wiring and pin designations"));
   }
-  LoadCell_1.setCalFactor(1000.00); 
-  LoadCell_2.setCalFactor(1000.00); 
-  LoadCell_3.setCalFactor(1000.00); 
-  LoadCell_4.setCalFactor(1000.00); 
-  LoadCell_5.setCalFactor(1000.00); 
+  LoadCell_1.setCalFactor(calibrationValue_1); 
+  LoadCell_2.setCalFactor(calibrationValue_2); 
+  LoadCell_3.setCalFactor(calibrationValue_3); 
+  LoadCell_4.setCalFactor(calibrationValue_4); 
+  LoadCell_5.setCalFactor(calibrationValue_5); 
   Serial.println(F("Startup is complete"));
 }
 
 void readValues(){
+  //Serial.println(F("readValues()"));
   static boolean newDataReady = 0;
   const int serialPrintInterval = 1000; //increase value to slow down serial print activity
   
@@ -66,18 +67,21 @@ void readValues(){
       // Serial.print(F(","));
       // Serial.print("    Load_cell 2 output val: ");
       //Serial.print(b);
-     // Serial.print(F(","));
+      //Serial.print(F(","));
       // Serial.print("    Load_cell 3 output val: ");
-     // Serial.print(c);
+      //Serial.print(c);
       //Serial.print(F(","));
       // Serial.print("    Load_cell 4 output val: ");
-     // Serial.print(d);
-     // Serial.print(F(","));
+      //Serial.print(d);
+      //Serial.print(F(","));
       // Serial.print("    Load_cell 5 output val: ");
       //Serial.println(e);
 
-      sprintf(statusUpdateMessage,"(%d,%d,%d,%d,%d)",a,b,c,d,e);
-      client.publish("witchroom/puzzles/cauldron/msg", statusUpdateMessage);
+      char statusUpdateMessage[27] = {};
+      uint8_t s = solved ? 1 : 0;
+      sprintf(statusUpdateMessage,"%d,%d,%d,%d,%d:%d",a,b,c,d,e,s);
+      Serial.println(statusUpdateMessage);
+      client.publish(pubMsg, statusUpdateMessage);
 
       newDataReady = 0;
       t = millis();

@@ -12,6 +12,17 @@ static boolean lockOpening = false;
 static int time = 0;
 const int openTime = 4000;
 
+void turnMotor() {
+  // Spin the stepper motor enough revolutions to move 1/3 of the box:
+  for (int i = 0; i < steps; i++) {
+    // These four lines result in 1 step:
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(stepperSpeed);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(stepperSpeed);
+  }
+}
+
 bool openBox() {
   uint8_t endStopState = digitalRead(openStopPin); 
   bool opened = (endStopState == LOW);
@@ -53,22 +64,7 @@ void disableMotor() {
   digitalWrite(resetPin, LOW); 
 }
 
-void turnMotor() {
-  // Spin the stepper motor enough revolutions to move 1/3 of the box:
-  for (int i = 0; i < steps; i++) {
-    // These four lines result in 1 step:
-    digitalWrite(stepPin, HIGH);
-    delayMicroseconds(stepperSpeed);
-    digitalWrite(stepPin, LOW);
-    delayMicroseconds(stepperSpeed);
-  }
-  
-}
-
 void open() {
-  //makeRed();
-  //statusObj["es"][boxLightsEffectId] == "1";
-
   enableMotor();
   bool isOpen = openBox();
 
@@ -79,15 +75,11 @@ void open() {
 }
 
 void close() {
-  //makeBlue();
-  //statusObj["es"][boxLightsEffectId] == "0";
-
   enableMotor();
   bool isClosed = closeBox();
 
   if(isClosed) {
     statusObj["l"][boxLockId] = closedlock;
-    disableMotor();
   }   
 }
 
@@ -103,27 +95,35 @@ void setupLocks(){
   // enable motor so the box cant be openend manually
   enableMotor();
 
-  statusObj["l"][boxLockId] = openlock; //status op locks are saved here
-
-  // open box on start
-  open();
+  // check current state of lock.
+  uint8_t openStopPinState = digitalRead(openStopPin);
+  uint8_t closeStopPinState = digitalRead(closeStopPin);
+  if(openStopPinState == LOW) {
+    // the box is currently open
+    statusObj["l"][boxLockId] = openedlock;
+  } else if(closeStopPinState == HIGH) {
+    // the box is currently closed
+    statusObj["l"][boxLockId] = closedlock;
+  } else {
+    // the box is in limbo. set it to open as it should be there
+    statusObj["l"][boxLockId] = openedlock;
+  }
 }
 
 void resetLocks() {
   //handle resetting locks
-  open();
 }
 
 //called every loop
 void checkLocks(){
   //opening
-  if(statusObj["l"][boxLockId] = openinglock;) {
+  if(statusObj["l"][boxLockId] == openinglock) {
     Serial.println("state is opening ");
     open();
   }
 
   //closing
-  if(statusObj["l"][boxLockId] = closinglock;) {
+  if(statusObj["l"][boxLockId] == closinglock) {
     close();
   }
 }

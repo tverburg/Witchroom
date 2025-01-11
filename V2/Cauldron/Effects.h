@@ -17,61 +17,6 @@ const uint8_t FRAMES_PER_SECOND = 60;
 bool gReverseDirection = false;
 CRGB leds[NUM_LEDS];
 
-void ledLoop()
-{
-  // Add entropy to random number generator; we use a lot of it.
-  random16_add_entropy( random());
-
-  LightAnimationWithPalette(); // run simulation frame, using palette colors
-  
-  FastLED.show(); // display this frame
-  FastLED.delay(1000 / FRAMES_PER_SECOND);
-}
-
-//called once at start
-void setupEffects(){
-  FastLED.addLeds<WS2812, LED_PIN, RGB>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness( BRIGHTNESS );
-  
-  // start with lights off
-  makeDark();
-
-  statusObj["e"][boxLightsEffectId] = 1; 
-  statusObj["es"][boxLightsEffectId] = "0"; 
-}
-
-void resetEffects() {
-  //handle resetting effects
-  makeDark();
-}
-
-void resetEffectById(String effectId) {
-  //handle resetting specific effect based on id
-}
-
-//called every loop
-void checkEffects(){
-  //handle effects stuff
-
-  if(statusObj["es"][boxLightsEffectId] == "0"; ) {
-    makeDark();
-  } else if(statusObj["es"][boxLightsEffectId] == "1"; ) {
-    makeColored();
-  } 
-
-  //statusObj["e"][boxLightsEffectId] = 1; //status op events are saved here
-  //statusObj["es"][boxLightsEffectId] = "[2, 4, -8, 3, 2]"; //states of events are saved here
-
-  ledLoop();
-}
-
-//called when host pc executes special effect
-//name and value for special are passed
-//only save data needed for special execute in checkEffects()
-void receivedSpecial(String name, String value) {
-  //handle receiving special effects
-  
-}
 
 //all set to black. lghts are "off"
 void makeDark() {
@@ -116,5 +61,54 @@ void LightAnimationWithPalette()
         pixelnumber = j;
       }
       leds[pixelnumber] = color;
+    }
+}
+
+void ledLoop()
+{
+  // Add entropy to random number generator; we use a lot of it.
+  random16_add_entropy( random());
+
+  LightAnimationWithPalette(); // run simulation frame, using palette colors
+  
+  FastLED.show(); // display this frame
+  FastLED.delay(1000 / FRAMES_PER_SECOND);
+}
+
+//called once at start
+void setupEffects(){
+  //FastLED.addLeds<WS2812, LED_PIN, RGB>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  //FastLED.setBrightness( BRIGHTNESS );
+  
+  // start with lights off
+  makeDark();
+}
+
+void resetEffects() {
+  //handle resetting effects
+  makeDark();
+}
+
+void resetEffectById(String effectId) {
+  //handle resetting specific effect based on id
+}
+
+//called every loop
+void checkEffects(){
+  //handle effects stuff
+  //ledLoop();
+}
+
+//called when host pc executes special effect
+//name and value for special are passed
+//only save data needed for special execute in checkEffects()
+void receivedSpecial(String name, String value) {
+  //handle receiving special effects
+    if(name == "crystallight") {
+        if(value == "off") {
+            makeDark();
+        } else if(value == "on") {
+            makeColored();
+        }
     }
 }

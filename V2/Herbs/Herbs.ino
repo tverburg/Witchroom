@@ -49,8 +49,6 @@ static JsonDocument statusObj;
 void setup() {
   setupJson();
   setupComponents();
-  setupLogging();
-  logString("Strtd"); //started
 }
 
 //dont touch
@@ -80,8 +78,3 @@ void loop() {
   checkTimer();
   #endif
 }
-
-
-
-
-
